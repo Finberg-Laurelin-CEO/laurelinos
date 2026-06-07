@@ -61,6 +61,7 @@ laurelinos sources add <name> <path>
 laurelinos brain status
 laurelinos brief --demo
 laurelinos open-loops --demo
+laurelinos prepare-meeting --demo
 laurelinos mcp serve
 ```
 

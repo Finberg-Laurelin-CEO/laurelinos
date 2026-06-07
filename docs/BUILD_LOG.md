@@ -445,3 +445,55 @@ Security notes:
 - `setup agent <target> --json` emits setup instructions and MCP config only; it does not mutate host-agent files.
 - `setup verify --json` verifies local readiness only.
 - No Hermes/OpenClaw install, provider credential handling, real source indexing, external writes, hosted services, public ports, or remote MCP added.
+
+## 2026-06-07 — Python runtime core and meeting-prep MCP
+
+Task: move the active MVP runtime away from plain JavaScript by adding a stdlib-only Python CLI/MCP core, make package scripts use Python as the primary runtime, and add a working synthetic meeting-prep workflow.
+
+Files:
+
+- `bin/laurelinos.py`;
+- `py/laurelinos_core/__init__.py`;
+- `py/laurelinos_core/runtime.py`;
+- `tests/python_runtime_test.py`;
+- `package.json`;
+- `README.md`;
+- `MVP_SPEC.md`;
+- `AGENTS.md`;
+- `docs/architecture/STACK_RATIONALE.md`;
+- `docs/architecture/MCP_INTEGRATION.md`;
+- `docs/integrations/README.md`;
+- `docs/integrations/AGENTIC_INSTALL.md`;
+- `docs/integrations/HERMES.md`;
+- `docs/integrations/OPENCLAW.md`;
+- `docs/LOCAL_BUILD_INSTRUCTIONS.md`;
+- `docs/demo/LOOM_DEMO_SCRIPT.md`;
+- `prompts/MASTER_BUILD_PROMPT.md`;
+- `prompts/AGENT_TASK_CLI.md`;
+- `prompts/AGENT_TASK_MCP.md`;
+- `prompts/AGENT_TASK_WORKFLOWS.md`;
+- `scripts/loom-demo-smoke.sh`;
+- `docs/BUILD_LOG.md`.
+
+Commands run:
+
+```bash
+python3 ./bin/laurelinos.py doctor
+python3 ./bin/laurelinos.py brief --demo
+python3 ./bin/laurelinos.py open-loops --demo
+python3 ./bin/laurelinos.py prepare-meeting --demo
+python3 ./bin/laurelinos.py setup agent hermes --json
+printf '%s\n' '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}' '{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}' '{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"prepare_meeting","arguments":{"query":"Beacon"}}}' | python3 ./bin/laurelinos.py mcp serve
+npm test
+npm run check
+npm run demo:loom
+git diff --check
+```
+
+Security notes:
+
+- Python runtime uses stdlib only and remains local-first.
+- `prepare-meeting --demo` and MCP `prepare_meeting` use synthetic data only.
+- Source add/approve still records paths and audit events without reading or indexing source file contents.
+- No Hermes/OpenClaw install, model-provider credential handling, external writes, hosted services, public ports, remote MCP, or real source indexing added.
+- Rust remains a future option for native packaging/indexing once toolchain and product behavior justify it.

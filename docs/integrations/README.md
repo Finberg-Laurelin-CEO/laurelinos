@@ -7,7 +7,7 @@ Think of the relationship as GBrain-like for agents: Hermes/OpenClaw/Claude/Code
 Current v0 integration target:
 
 ```bash
-node ./bin/laurelinos.mjs mcp serve
+python3 ./bin/laurelinos.py mcp serve
 ```
 
 Guides:

@@ -81,12 +81,12 @@ First tools:
 get_status
 get_daily_brief
 get_open_loops
+prepare_meeting
 ```
 
 Later tools:
 
 ```text
-prepare_meeting
 draft_followup
 write_memory
 create_task

@@ -11,10 +11,10 @@ Claude, Codex, Hermes, OpenClaw, Cursor, and future agents should be able to cal
 Run the local stdio server:
 
 ```bash
-node ./bin/laurelinos.mjs mcp serve
+python3 ./bin/laurelinos.py mcp serve
 ```
 
-The server reads newline-delimited JSON-RPC messages from stdin and writes JSON-RPC responses to stdout. It does not start an HTTP server, bind a port, expose a remote endpoint, or perform external writes. Use the direct `node` command for MCP smoke tests so npm script headers do not pollute stdout.
+The server reads newline-delimited JSON-RPC messages from stdin and writes JSON-RPC responses to stdout. It does not start an HTTP server, bind a port, expose a remote endpoint, or perform external writes. Use the direct `python3` command for MCP smoke tests so npm script headers do not pollute stdout.
 
 ## First tools
 
@@ -22,6 +22,7 @@ The server reads newline-delimited JSON-RPC messages from stdin and writes JSON-
 get_status
 get_daily_brief
 get_open_loops
+prepare_meeting
 ```
 
 These tools are synthetic, read-only, local by default, and backed by `examples/demo-data/demo-brain.json`.
@@ -32,26 +33,27 @@ These tools are synthetic, read-only, local by default, and backed by `examples/
 
 `get_open_loops` returns synthetic open loops with source IDs and `approvalRequiredBeforeExternalAction: true`.
 
+`prepare_meeting` returns synthetic meeting-prep context with source IDs, suggested agenda, likely questions, and approval-gated external action posture.
+
 ## Local smoke test
 
 ```bash
 printf '%s\n' \
   '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}' \
   '{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}' \
-  '{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"get_open_loops","arguments":{}}}' \
-  | node ./bin/laurelinos.mjs mcp serve
+  '{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"prepare_meeting","arguments":{"query":"Beacon"}}}' \
+  | python3 ./bin/laurelinos.py mcp serve
 ```
 
 Expected behavior:
 
 - `initialize` returns LaurelinOS server metadata and tool capability.
-- `tools/list` returns only `get_status`, `get_daily_brief`, and `get_open_loops`.
-- `tools/call get_open_loops` returns synthetic open loops with source IDs.
+- `tools/list` returns `get_status`, `get_daily_brief`, `get_open_loops`, and `prepare_meeting`.
+- `tools/call prepare_meeting` returns synthetic meeting prep with source IDs.
 
 ## Later tools
 
 ```text
-prepare_meeting
 draft_followup
 write_memory
 create_task

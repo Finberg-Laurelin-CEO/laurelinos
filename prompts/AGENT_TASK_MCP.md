@@ -10,7 +10,7 @@ feat/mcp-server
 
 ## Current status on main
 
-`laurelinos mcp serve` already starts a minimal stdio JSON-RPC server with synthetic read-only tools. This branch should make that path more testable and better documented without exposing a remote endpoint.
+`laurelinos mcp serve` starts a stdio JSON-RPC server with synthetic read-only tools. Python is now the active runtime path; the older Node MCP implementation is a temporary compatibility reference. This branch should make that path more testable and better documented without exposing a remote endpoint.
 
 ## Scope
 
@@ -35,6 +35,7 @@ Expose:
 get_status
 get_daily_brief
 get_open_loops
+prepare_meeting
 ```
 
 ## Requirements

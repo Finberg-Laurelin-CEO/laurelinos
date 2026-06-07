@@ -5,8 +5,8 @@
 Required:
 
 - Git
-- Node.js 20+
-- npm
+- Python 3
+- Node.js 20+ and npm for the current test/package harness while the runtime migrates to Python
 
 Optional:
 
@@ -26,7 +26,7 @@ npm test
 npm run check
 ```
 
-`npm run check` runs the unit tests plus local demo smoke commands for `doctor`, `brief --demo`, and `open-loops --demo`.
+`npm run check` runs Node compatibility tests, Python runtime tests, and Python CLI smoke commands for `doctor`, `brief --demo`, `open-loops --demo`, and `prepare-meeting --demo`.
 
 ## Try the local MVP
 
@@ -45,6 +45,7 @@ npm run dev -- sources list
 npm run dev -- brain status
 npm run dev -- brief --demo
 npm run dev -- open-loops --demo
+npm run dev -- prepare-meeting --demo
 ```
 
 All demo output is synthetic. Do not replace `examples/demo-data/` with real Laurelin, customer, investor, or private Obsidian data in the public repo.
@@ -132,7 +133,7 @@ List tools:
 printf '%s\n' \
   '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}' \
   '{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}' \
-  | node ./bin/laurelinos.mjs mcp serve
+  | python3 ./bin/laurelinos.py mcp serve
 ```
 
 Call a synthetic tool:
@@ -141,7 +142,7 @@ Call a synthetic tool:
 printf '%s\n' \
   '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}' \
   '{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"get_daily_brief","arguments":{}}}' \
-  | node ./bin/laurelinos.mjs mcp serve
+  | python3 ./bin/laurelinos.py mcp serve
 ```
 
 Expected tools:
@@ -150,6 +151,7 @@ Expected tools:
 get_status
 get_daily_brief
 get_open_loops
+prepare_meeting
 ```
 
 ## What not to do for v0

@@ -31,11 +31,13 @@ The user supplies compute through Claude/Codex subscriptions, provider API keys,
 
 ## Existing v0 on main
 
-The pushed `main` branch includes the first local scaffold:
+The pushed `main` branch includes the first local scaffold, and active runtime work is moving to Python:
 
 ```text
-bin/laurelinos.mjs
-lib/**
+bin/laurelinos.py
+py/laurelinos_core/**
+bin/laurelinos.mjs      temporary Node compatibility reference
+lib/**                  temporary Node compatibility helpers
 examples/demo-data/demo-brain.json
 ```
 
@@ -51,6 +53,7 @@ npm run dev -- sources add demo ./examples/demo-data
 npm run dev -- brain status
 npm run dev -- brief --demo
 npm run dev -- open-loops --demo
+npm run dev -- prepare-meeting --demo
 npm run dev -- mcp serve
 ```
 
@@ -88,11 +91,12 @@ Build in this order:
 2. Improve synthetic demo data.
 3. Improve `brief --demo`.
 4. Improve `open-loops --demo`.
-5. Add meeting-prep demo behavior if it stays synthetic and local.
-6. Create GBrain adapter interface with stub implementation.
-7. Improve MCP server exposing `get_status`, `get_daily_brief`, and `get_open_loops`.
-8. Add local integration docs.
-9. Only later: docs site, Stripe provisioning, hosted onboarding, and cloud infrastructure.
+5. Keep meeting-prep demo behavior synthetic, local, source-cited, and exposed through CLI/MCP.
+6. Continue moving active runtime behavior from JavaScript to Python.
+7. Create GBrain adapter interface with stub implementation.
+8. Improve MCP server exposing `get_status`, `get_daily_brief`, `get_open_loops`, and `prepare_meeting`.
+9. Add local integration docs.
+10. Only later: docs site, Stripe provisioning, hosted onboarding, and cloud infrastructure.
 
 Do not build the website first.
 

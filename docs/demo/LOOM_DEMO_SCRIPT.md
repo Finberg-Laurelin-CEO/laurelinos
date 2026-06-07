@@ -38,19 +38,20 @@ For recording, you can either run the script end-to-end or run the commands manu
 
 ```bash
 clear
-node ./bin/laurelinos.mjs doctor
-node ./bin/laurelinos.mjs license status
-node ./bin/laurelinos.mjs setup agent openclaw --json
-node ./bin/laurelinos.mjs brief --demo
-node ./bin/laurelinos.mjs open-loops --demo
+python3 ./bin/laurelinos.py doctor
+python3 ./bin/laurelinos.py license status
+python3 ./bin/laurelinos.py setup agent openclaw --json
+python3 ./bin/laurelinos.py brief --demo
+python3 ./bin/laurelinos.py open-loops --demo
+python3 ./bin/laurelinos.py prepare-meeting --demo
 printf '%s\n' \
   '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}' \
   '{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}' \
   '{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"get_open_loops","arguments":{}}}' \
-  | node ./bin/laurelinos.mjs mcp serve
+  | python3 ./bin/laurelinos.py mcp serve
 ```
 
-Use `node ./bin/laurelinos.mjs` instead of `npm run dev --` for MCP smoke tests so npm script banners do not pollute stdio JSON-RPC output.
+Use `python3 ./bin/laurelinos.py` instead of `npm run dev --` for MCP smoke tests so npm script banners do not pollute stdio JSON-RPC output.
 
 ## 90-second script
 
@@ -65,7 +66,7 @@ This is LaurelinOS, a local-first AI chief of staff layer for founders. It helps
 Show:
 
 ```bash
-node ./bin/laurelinos.mjs doctor
+python3 ./bin/laurelinos.py doctor
 ```
 
 Point out:
@@ -85,7 +86,7 @@ LaurelinOS is not selling model credits. It works with the model and agent syste
 Show:
 
 ```bash
-node ./bin/laurelinos.mjs license status
+python3 ./bin/laurelinos.py license status
 ```
 
 Point out:
@@ -99,7 +100,7 @@ Point out:
 Show:
 
 ```bash
-node ./bin/laurelinos.mjs brief --demo
+python3 ./bin/laurelinos.py brief --demo
 ```
 
 Say:
@@ -120,7 +121,7 @@ Point out:
 Show:
 
 ```bash
-node ./bin/laurelinos.mjs open-loops --demo
+python3 ./bin/laurelinos.py open-loops --demo
 ```
 
 Say:
@@ -142,11 +143,11 @@ Point out:
 Show:
 
 ```bash
-node ./bin/laurelinos.mjs setup agent openclaw --json
+python3 ./bin/laurelinos.py setup agent openclaw --json
 printf '%s\n' \
   '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}' \
   '{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}' \
-  | node ./bin/laurelinos.mjs mcp serve
+  | python3 ./bin/laurelinos.py mcp serve
 ```
 
 Say:

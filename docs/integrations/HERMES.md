@@ -2,19 +2,26 @@
 
 Status: v0 local stdio MCP guide
 
+Public reference: https://hermes-agent.nousresearch.com
+
 ## Role split
 
-Hermes should be an execution client. LaurelinOS should remain the memory, source-policy, approval, and audit layer.
+Hermes is an autonomous agent/runtime. LaurelinOS should not download, install, run, vendor, or supervise Hermes.
+
+LaurelinOS should be installed alongside the user's existing Hermes setup as a local memory, source-policy, approval, audit, and workflow layer.
 
 ```text
-Hermes agent
-  -> calls LaurelinOS over local stdio MCP
-  -> receives cited founder context, daily brief, and open loops
-  -> proposes work
-  -> waits for LaurelinOS/user approval before external writes
+Hermes
+  -> supplies agent execution, model calls, browser/tools, and automations
+  -> calls LaurelinOS over local stdio MCP when it needs founder/company context
+
+LaurelinOS
+  -> owns source registry, source approvals, audit log, operating briefs, open loops, and future memory adapters
+  -> never becomes the model provider
+  -> never stores raw provider credentials
 ```
 
-Do not make Hermes the canonical company memory. Do not let Hermes silently index broad local paths.
+This solves the model-plug-in question: Hermes uses whatever model/account/provider the user already configured. LaurelinOS gives Hermes structured, source-scoped company context and approval boundaries.
 
 ## Current LaurelinOS MCP command
 
@@ -42,22 +49,38 @@ get_open_loops
 
 All current tools are read-only and synthetic-data-only.
 
-## Generic Hermes MCP config shape
+## Agentic install target
 
-Hermes documents MCP servers under an `mcp_servers` map in its config. Use the local stdio command and adapt the path to your checkout.
+Do not ask the customer to manually understand MCP config unless needed.
+
+The desired install path is:
+
+```text
+User asks Hermes or another setup agent:
+"Install LaurelinOS into my agent environment. Do not install Hermes. Configure LaurelinOS as a local MCP server and verify it with the synthetic demo."
+
+Agent:
+  -> checks node/npm/git
+  -> clones or receives LaurelinOS package
+  -> runs laurelinos doctor
+  -> runs laurelinos init --local
+  -> runs laurelinos brief --demo
+  -> writes/updates the host agent's MCP config with the LaurelinOS stdio command
+  -> runs a tools/list smoke test
+  -> reports exactly what changed
+```
+
+Use absolute paths during development:
 
 ```json
 {
-  "mcp_servers": {
-    "laurelinos": {
-      "command": "node",
-      "args": ["/absolute/path/to/laurelinos/bin/laurelinos.mjs", "mcp", "serve"]
-    }
-  }
+  "name": "laurelinos",
+  "command": "node",
+  "args": ["/absolute/path/to/laurelinos/bin/laurelinos.mjs", "mcp", "serve"]
 }
 ```
 
-Use an absolute path for the repository checkout during development so the agent does not depend on the shell's current directory.
+The exact config file and field names are host-agent-specific. The installer agent should follow Hermes' current docs and local config conventions rather than LaurelinOS hard-coding them.
 
 ## Agent instruction snippet
 
@@ -111,6 +134,7 @@ Do not add direct write tools first. Proposal tools come first; write tools requ
 
 For v0:
 
+- no Hermes download or native install by LaurelinOS;
 - no remote MCP;
 - no public ports;
 - no real source indexing from Hermes;

@@ -2,19 +2,26 @@
 
 Status: v0 local stdio MCP guide
 
+Public reference: https://openclaw.ai
+
 ## Role split
 
-OpenClaw should be an execution/runtime client. LaurelinOS should remain the source-scoped memory, approval, audit, and operating-rhythm layer.
+OpenClaw is an agent/action layer. LaurelinOS should not download, install, run, vendor, or supervise OpenClaw.
+
+LaurelinOS should be installed alongside the user's existing OpenClaw setup as a local memory, source-policy, approval, audit, and operating-rhythm layer.
 
 ```text
 OpenClaw
-  -> calls LaurelinOS over local stdio MCP
-  -> receives cited founder context and open loops
-  -> plans or executes only inside user-approved scope
-  -> external actions require LaurelinOS/user approval first
+  -> supplies agent execution, model calls, chat/action workflows, and tools
+  -> calls LaurelinOS over local stdio MCP when it needs founder/company context
+
+LaurelinOS
+  -> owns source registry, source approvals, audit log, operating briefs, open loops, and future memory adapters
+  -> never becomes the model provider
+  -> never stores raw provider credentials
 ```
 
-Do not make OpenClaw the canonical state layer for LaurelinOS. Models and agent runtimes do not own durable company state.
+This solves the model-plug-in question: OpenClaw uses whatever model/account/tooling the user already configured. LaurelinOS gives OpenClaw structured, source-scoped company context and approval boundaries.
 
 ## Current LaurelinOS MCP command
 
@@ -42,28 +49,40 @@ get_open_loops
 
 All current tools are read-only and synthetic-data-only.
 
-## Generic OpenClaw MCP config shape
+## Agentic install target
 
-OpenClaw documents MCP servers through an `mcp.servers` configuration shape and CLI registry commands. Use a local stdio server command and adapt paths to your checkout.
+Do not ask the customer to manually understand MCP config unless needed.
 
-Example config shape:
+The desired install path is:
+
+```text
+User asks OpenClaw or another setup agent:
+"Install LaurelinOS into my agent environment. Do not install OpenClaw. Configure LaurelinOS as a local MCP server and verify it with the synthetic demo."
+
+Agent:
+  -> checks node/npm/git
+  -> clones or receives LaurelinOS package
+  -> runs laurelinos doctor
+  -> runs laurelinos init --local
+  -> runs laurelinos brief --demo
+  -> writes/updates the host agent's MCP config with the LaurelinOS stdio command
+  -> runs a tools/list smoke test
+  -> reports exactly what changed
+```
+
+Use absolute paths during development:
 
 ```json
 {
-  "mcp": {
-    "servers": {
-      "laurelinos": {
-        "command": "node",
-        "args": ["/absolute/path/to/laurelinos/bin/laurelinos.mjs", "mcp", "serve"]
-      }
-    }
-  }
+  "name": "laurelinos",
+  "command": "node",
+  "args": ["/absolute/path/to/laurelinos/bin/laurelinos.mjs", "mcp", "serve"]
 }
 ```
 
-If using the OpenClaw MCP registry CLI, register the same command/args pair as the `laurelinos` server.
+The exact config file and field names are host-agent-specific. The installer agent should follow OpenClaw's current docs and local config conventions rather than LaurelinOS hard-coding them.
 
-Use an absolute path during development. Do not wrap the command in `npm run` for MCP clients because npm script banners can pollute stdio JSON-RPC framing.
+Do not wrap the command in `npm run` for MCP clients because npm script banners can pollute stdio JSON-RPC framing.
 
 ## Agent instruction snippet
 
@@ -118,6 +137,7 @@ Avoid direct write tools until the proposal/approval/result loop is designed.
 
 For v0:
 
+- no OpenClaw download or native install by LaurelinOS;
 - no remote MCP;
 - no public ports;
 - no automatic broad indexing;

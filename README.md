@@ -50,6 +50,7 @@ Working now:
 ```bash
 npm test
 npm run check
+npm run demo:loom
 npm run dev -- doctor
 npm run dev -- init --local
 npm run dev -- sources list

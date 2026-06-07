@@ -326,3 +326,36 @@ Security notes:
 
 - Documentation only.
 - No remote MCP, public port, external write tool, real source indexing, provider credential handling, hosted service, or cloud infrastructure added.
+
+## 2026-06-07 — Loom demo script and agentic install correction
+
+Task: add a repeatable Loom demo smoke script, public-safe recording guide, and correct Hermes/OpenClaw strategy to agentic configuration without native downloads.
+
+Files:
+
+- `scripts/loom-demo-smoke.sh`;
+- `docs/demo/LOOM_DEMO_SCRIPT.md`;
+- `docs/integrations/AGENTIC_INSTALL.md`;
+- `docs/integrations/README.md`;
+- `docs/integrations/HERMES.md`;
+- `docs/integrations/OPENCLAW.md`;
+- `docs/LOCAL_BUILD_INSTRUCTIONS.md`;
+- `README.md`;
+- `package.json`;
+- `docs/BUILD_LOG.md`.
+
+Commands run:
+
+```bash
+npm test
+npm run check
+npm run demo:loom
+git diff --check
+```
+
+Security notes:
+
+- Do not download, install, vendor, or run Hermes/OpenClaw from LaurelinOS.
+- LaurelinOS should be configured agentically as a local MCP server inside the user's existing agent environment.
+- Existing agents make model calls through the user's accounts; LaurelinOS supplies state, source policy, approvals, audit, and workflows.
+- No secrets, provider credentials, real source indexing, external writes, hosted services, public ports, or remote MCP added.

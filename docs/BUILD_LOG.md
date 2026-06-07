@@ -385,3 +385,32 @@ Security notes:
 
 - Documentation only.
 - No Hermes/OpenClaw download path, native runner, provider credential handling, real source indexing, external write, hosted service, public port, or remote MCP added.
+
+## 2026-06-07 — License hardening and stack rationale
+
+Task: strengthen proprietary evaluation license language and document why the MVP uses plain JavaScript/Node.
+
+Files:
+
+- `LICENSE`;
+- `NOTICE.md`;
+- `LICENSE-DECISION.md`;
+- `README.md`;
+- `package.json`;
+- `docs/architecture/STACK_RATIONALE.md`;
+- `docs/BUILD_LOG.md`.
+
+Commands run:
+
+```bash
+npm test
+npm run check
+npm run demo:loom
+git diff --check
+```
+
+Security/legal notes:
+
+- License text now more explicitly restricts commercial use, production use, redistribution, public forks/mirrors, hosted demos, competitive use, remote services, and AI/ML training or dataset use.
+- `package.json` remains `private` and `UNLICENSED`, with a blocking `prepublishOnly` script to reduce accidental publication.
+- This is protective drafting, not a substitute for attorney review.

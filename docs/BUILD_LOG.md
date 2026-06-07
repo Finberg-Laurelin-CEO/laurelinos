@@ -213,3 +213,32 @@ Security notes:
 - Planning only.
 - No live Stripe secrets, webhook code, hosted onboarding, GCP/VPS resources, public ports, remote MCP, API-credit metering, or bundled compute implementation added.
 - Activation tokens are documented as secrets that must not be logged.
+
+## 2026-06-07 — Proprietary licence and user-research notes
+
+Task: replace the permissive MIT licence with a proprietary source-available evaluation licence and save notes on the referenced Cookiy user-research skill.
+
+Files:
+
+- `LICENSE`;
+- `LICENSE-DECISION.md`;
+- `package.json`;
+- `docs/research/USER_RESEARCH_SKILL_NOTES.md`;
+- `docs/BUILD_LOG.md`.
+
+Commands run:
+
+```bash
+npm test
+npm run check
+git diff --check
+```
+
+Unresolved questions:
+
+- Attorney review is still needed before broad external promotion or enterprise sales.
+
+Security notes:
+
+- No secrets, tokens, private customer data, live Stripe code, hosted onboarding, GCP/VPS resources, public ports, or remote MCP added.
+- The user-research skill is documented as an external research workflow, not vendored into LaurelinOS runtime.

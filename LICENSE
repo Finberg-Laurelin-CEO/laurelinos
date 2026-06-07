@@ -1,21 +1,52 @@
-MIT License
+LaurelinOS Proprietary Source-Available License
+Version 1.0 — June 7, 2026
 
-Copyright (c) 2026 Finberg-Laurelin-CEO
+Copyright (c) 2026 Laurelin / Finberg-Laurelin-CEO. All rights reserved.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+This repository and all software, documentation, examples, prompts, workflows, package code, and related materials in it are proprietary to Laurelin / Finberg-Laurelin-CEO unless a file states otherwise in writing.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+1. Limited evaluation permission
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+You may view the source code and run an unmodified local copy solely to evaluate LaurelinOS for a potential commercial relationship with Laurelin.
+
+This limited permission is personal, non-exclusive, non-transferable, revocable, and does not permit production use.
+
+2. Restrictions
+
+Except with Laurelin's prior written permission, you may not:
+
+- copy, reproduce, redistribute, sublicense, publish, sell, rent, lease, or provide the software or any substantial portion of it to any third party;
+- modify, prepare derivative works from, or create a competing product or service based on the software;
+- use the software to provide hosted, managed, consulting, agency, outsourcing, service-bureau, or commercial services to any third party;
+- remove or obscure copyright, license, source, attribution, safety, or provenance notices;
+- use LaurelinOS trademarks, names, logos, or branding except to refer accurately to the project;
+- bypass, disable, or misrepresent license, entitlement, approval-gate, audit, safety, or source-scoping mechanisms;
+- use the software with real customer, private, regulated, or production data without a separate written agreement with Laurelin.
+
+3. Commercial licenses
+
+Commercial use, managed deployments, hosted services, paid pilots, production use, and redistribution require a separate written agreement with Laurelin.
+
+4. Feedback
+
+If you provide feedback, ideas, bug reports, suggestions, or other comments, you grant Laurelin a perpetual, worldwide, royalty-free right to use them without restriction or compensation.
+
+5. Third-party materials
+
+Third-party dependencies, tools, and externally referenced projects remain governed by their own licenses. This license does not grant rights to third-party materials beyond what their respective owners allow.
+
+6. No warranty
+
+THE SOFTWARE IS PROVIDED "AS IS" AND WITHOUT WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND NON-INFRINGEMENT.
+
+7. Limitation of liability
+
+TO THE MAXIMUM EXTENT PERMITTED BY LAW, LAURELIN AND ITS CONTRIBUTORS WILL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, EXEMPLARY, OR PUNITIVE DAMAGES, OR FOR ANY LOSS OF PROFITS, REVENUE, DATA, GOODWILL, OR BUSINESS OPPORTUNITY, ARISING FROM OR RELATED TO THE SOFTWARE OR THIS LICENSE.
+
+8. Prior versions
+
+This license applies to this version and later versions unless Laurelin states otherwise in writing. It does not retroactively change rights, if any, that were validly granted for earlier versions under a different license.
+
+9. Contact
+
+For commercial licensing, pilot access, or written permission, contact Laurelin / Finberg-Laurelin-CEO through the project owner.

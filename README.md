@@ -22,7 +22,7 @@ This repository is the public OS layer for LaurelinOS:
 - agent build instructions;
 - later documentation for `laurelinos.dev`.
 
-The commercial packaging may be called **FounderOS**. LaurelinOS is the open operating layer. FounderOS is the paid product experience around onboarding, integrations, support, billing, and managed automation.
+The commercial packaging may be called **FounderOS**. LaurelinOS is now source-available/proprietary going forward; FounderOS is the paid product experience around onboarding, integrations, support, billing, and managed automation.
 
 ## Product thesis
 
@@ -54,6 +54,9 @@ npm run dev -- doctor
 npm run dev -- init --local
 npm run dev -- sources list
 npm run dev -- sources add demo ./examples/demo-data
+npm run dev -- sources show demo
+npm run dev -- sources approve demo
+npm run dev -- audit log
 npm run dev -- brain status
 npm run dev -- brief --demo
 npm run dev -- open-loops --demo
@@ -103,6 +106,9 @@ laurelinos doctor
 laurelinos init --local
 laurelinos sources list
 laurelinos sources add <name> <path>
+laurelinos sources show <name>
+laurelinos sources approve <name>
+laurelinos audit log
 laurelinos brain status
 laurelinos brief --demo
 laurelinos open-loops --demo

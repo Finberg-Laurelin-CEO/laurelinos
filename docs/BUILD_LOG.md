@@ -242,3 +242,32 @@ Security notes:
 
 - No secrets, tokens, private customer data, live Stripe code, hosted onboarding, GCP/VPS resources, public ports, or remote MCP added.
 - The user-research skill is documented as an external research workflow, not vendored into LaurelinOS runtime.
+
+## 2026-06-07 — Source approval and audit log
+
+Task: add explicit local source approval and audit-log commands before any real indexing work.
+
+Files:
+
+- `bin/laurelinos.mjs`;
+- `lib/config.mjs`;
+- `tests/cli.test.mjs`;
+- `README.md`;
+- `docs/LOCAL_BUILD_INSTRUCTIONS.md`;
+- `docs/architecture/ARCHITECTURE.md`;
+- `packages/cli/README.md`;
+- `docs/BUILD_LOG.md`.
+
+Commands run:
+
+```bash
+npm test
+npm run check
+git diff --check
+```
+
+Security notes:
+
+- `sources add` records a candidate and audit event only.
+- `sources approve` records explicit approval and an audit event only.
+- No indexing, file-content reads, external writes, hosted services, public ports, or remote MCP added.

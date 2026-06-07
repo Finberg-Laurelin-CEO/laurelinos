@@ -3,7 +3,14 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
-import { ensureLocalConfig, getConfigDir, readSources, writeSources } from '../lib/config.mjs';
+import {
+  appendAuditEvent,
+  ensureLocalConfig,
+  getConfigDir,
+  readAuditEvents,
+  readSources,
+  writeSources
+} from '../lib/config.mjs';
 import { buildDailyBrief, detectOpenLoops, loadDemoBrain } from '../lib/demo.mjs';
 import { printBrief, printJson, printOpenLoops } from '../lib/format.mjs';
 import { handleMcpLine } from '../lib/mcp.mjs';
@@ -12,7 +19,7 @@ const repoRoot = path.resolve(new URL(import.meta.url).pathname, '..', '..');
 const args = process.argv.slice(2);
 
 function usage(exitCode = 0) {
-  console.log(`LaurelinOS local-first runtime\n\nUsage:\n  laurelinos doctor\n  laurelinos init --local\n  laurelinos sources list\n  laurelinos sources add <name> <path>\n  laurelinos brain status\n  laurelinos brief --demo [--json]\n  laurelinos open-loops --demo [--json]\n  laurelinos mcp serve\n`);
+  console.log(`LaurelinOS local-first runtime\n\nUsage:\n  laurelinos doctor\n  laurelinos init --local\n  laurelinos sources list\n  laurelinos sources add <name> <path>\n  laurelinos sources show <name>\n  laurelinos sources approve <name>\n  laurelinos audit log\n  laurelinos audit show <id>\n  laurelinos brain status\n  laurelinos brief --demo [--json]\n  laurelinos open-loops --demo [--json]\n  laurelinos mcp serve\n`);
   process.exit(exitCode);
 }
 
@@ -27,6 +34,15 @@ function commandExists(command, versionArgs = ['--version']) {
     available: result.status === 0,
     version: result.status === 0 ? String(result.stdout || result.stderr).trim().split('\n')[0] : null
   };
+}
+
+function findSourceOrExit(data, name) {
+  const source = data.sources.find((candidate) => candidate.name === name);
+  if (!source) {
+    console.error(`Unknown source: ${name}`);
+    process.exit(1);
+  }
+  return source;
 }
 
 function runDoctor() {
@@ -89,6 +105,16 @@ function runSources() {
     printJson(data);
     return;
   }
+  if (sub === 'show') {
+    const name = args[2];
+    if (!name) {
+      console.error('Usage: laurelinos sources show <name>');
+      process.exit(1);
+    }
+    const data = readSources();
+    printJson(findSourceOrExit(data, name));
+    return;
+  }
   if (sub === 'add') {
     const name = args[2];
     const sourcePath = args[3];
@@ -108,14 +134,76 @@ function runSources() {
       path: resolved,
       addedAt: new Date().toISOString(),
       approvedForIndexing: false,
+      approvalStatus: 'candidate',
       note: 'Added as a source candidate. Indexing is disabled until explicitly approved.'
     };
     if (existingIndex >= 0) data.sources[existingIndex] = record;
     else data.sources.push(record);
     writeSources(data);
+    const event = appendAuditEvent('source_candidate_added', {
+      sourceName: name,
+      path: resolved,
+      approvedForIndexing: false
+    });
     console.log(`Added source candidate: ${name}`);
     console.log(`Path: ${resolved}`);
+    console.log(`Audit event: ${event.id}`);
     console.log('Indexing remains disabled until explicitly approved.');
+    return;
+  }
+  if (sub === 'approve') {
+    const name = args[2];
+    if (!name) {
+      console.error('Usage: laurelinos sources approve <name>');
+      process.exit(1);
+    }
+    const data = readSources();
+    const source = findSourceOrExit(data, name);
+    if (source.approvedForIndexing) {
+      console.log(`Source already approved: ${name}`);
+      console.log(`Approval event: ${source.approvalEventId ?? 'unknown'}`);
+      return;
+    }
+    const event = appendAuditEvent('source_approved_for_indexing', {
+      sourceName: source.name,
+      path: source.path,
+      previousApprovalStatus: source.approvalStatus ?? 'candidate',
+      approvedForIndexing: true
+    });
+    source.approvedForIndexing = true;
+    source.approvalStatus = 'approved';
+    source.approvedAt = event.createdAt;
+    source.approvedBy = event.actor;
+    source.approvalEventId = event.id;
+    source.note = 'Approved for future indexing by explicit local command. No indexing was performed by this command.';
+    writeSources(data);
+    console.log(`Approved source for future indexing: ${name}`);
+    console.log(`Path: ${source.path}`);
+    console.log(`Audit event: ${event.id}`);
+    console.log('No indexing was performed.');
+    return;
+  }
+  usage(1);
+}
+
+function runAudit() {
+  const sub = args[1];
+  if (sub === 'log') {
+    printJson({ events: readAuditEvents() });
+    return;
+  }
+  if (sub === 'show') {
+    const id = args[2];
+    if (!id) {
+      console.error('Usage: laurelinos audit show <id>');
+      process.exit(1);
+    }
+    const event = readAuditEvents().find((candidate) => candidate.id === id);
+    if (!event) {
+      console.error(`Unknown audit event: ${id}`);
+      process.exit(1);
+    }
+    printJson(event);
     return;
   }
   usage(1);
@@ -132,6 +220,8 @@ function runBrain() {
     status: 'local runtime ready',
     configDir: config.configDir,
     sourceCount: sources.sources.length,
+    approvedSourceCount: sources.sources.filter((source) => source.approvedForIndexing).length,
+    auditLogAvailable: fs.existsSync(config.auditPath),
     gbrain,
     demoDataAvailable: fs.existsSync(demoPath),
     externalActionsRequireApproval: true,
@@ -195,6 +285,9 @@ switch (command) {
     break;
   case 'sources':
     runSources();
+    break;
+  case 'audit':
+    runAudit();
     break;
   case 'brain':
     runBrain();

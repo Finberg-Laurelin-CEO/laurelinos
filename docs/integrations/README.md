@@ -10,6 +10,7 @@ node ./bin/laurelinos.mjs mcp serve
 
 Guides:
 
+- [Agentic install plan](AGENTIC_INSTALL.md)
 - [Hermes](HERMES.md)
 - [OpenClaw](OPENCLAW.md)
 
@@ -19,9 +20,18 @@ Clients execute. LaurelinOS owns state.
 
 ```text
 Claude / Codex / Hermes / OpenClaw / Cursor
+  -> model calls and agent execution through user's existing setup
   -> local stdio MCP
   -> LaurelinOS runtime
-  -> source-scoped memory and approval gates
+  -> source-scoped memory, approval gates, and audit log
 ```
 
-Do not expose remote MCP or public ports for v0.
+## What LaurelinOS must not do
+
+- Do not download, install, or run Hermes/OpenClaw natively.
+- Do not ask for raw model-provider credentials.
+- Do not sell API credits as the first business model.
+- Do not expose remote MCP or public ports for v0.
+- Do not silently index real folders.
+
+The product should be installed agentically into the user's current agent environment, then act as the state and policy layer those agents call.

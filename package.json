@@ -12,7 +12,8 @@
     "dev": "node ./bin/laurelinos.mjs",
     "start": "node ./bin/laurelinos.mjs",
     "test": "node --test tests/*.test.mjs",
-    "check": "npm test && node ./bin/laurelinos.mjs doctor && node ./bin/laurelinos.mjs brief --demo && node ./bin/laurelinos.mjs open-loops --demo"
+    "check": "npm test && node ./bin/laurelinos.mjs doctor && node ./bin/laurelinos.mjs brief --demo && node ./bin/laurelinos.mjs open-loops --demo",
+    "demo:loom": "bash ./scripts/loom-demo-smoke.sh"
   },
   "engines": {
     "node": ">=20"

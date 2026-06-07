@@ -98,6 +98,16 @@ laurelinos doctor
 laurelinos brief --demo
 ```
 
+## Loom demo smoke
+
+Use this to prepare a public-safe terminal demo:
+
+```bash
+npm run demo:loom
+```
+
+Recording guidance lives in `docs/demo/LOOM_DEMO_SCRIPT.md`.
+
 ## MCP smoke test
 
 The v0 MCP server is local stdio only. It exposes synthetic read-only tools and should not be run as a public network service.

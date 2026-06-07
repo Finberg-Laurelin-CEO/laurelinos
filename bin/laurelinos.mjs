@@ -6,6 +6,7 @@ import { spawnSync } from 'node:child_process';
 import { ensureLocalConfig, getConfigDir, readSources, writeSources } from '../lib/config.mjs';
 import { buildDailyBrief, detectOpenLoops, loadDemoBrain } from '../lib/demo.mjs';
 import { printBrief, printJson, printOpenLoops } from '../lib/format.mjs';
+import { handleMcpLine } from '../lib/mcp.mjs';
 
 const repoRoot = path.resolve(new URL(import.meta.url).pathname, '..', '..');
 const args = process.argv.slice(2);
@@ -176,69 +177,10 @@ function runMcp() {
       const line = buffer.slice(0, index).trim();
       buffer = buffer.slice(index + 1);
       if (!line) continue;
-      handleJsonRpcLine(line);
+      const response = handleMcpLine(line, { repoRoot });
+      if (response) process.stdout.write(JSON.stringify(response) + '\n');
     }
   });
-}
-
-function rpcResult(id, result) {
-  process.stdout.write(JSON.stringify({ jsonrpc: '2.0', id, result }) + '\n');
-}
-
-function rpcError(id, code, message) {
-  process.stdout.write(JSON.stringify({ jsonrpc: '2.0', id, error: { code, message } }) + '\n');
-}
-
-function handleJsonRpcLine(line) {
-  let message;
-  try {
-    message = JSON.parse(line);
-  } catch {
-    rpcError(null, -32700, 'Parse error');
-    return;
-  }
-  const { id, method, params = {} } = message;
-  try {
-    if (method === 'initialize') {
-      rpcResult(id, {
-        protocolVersion: '2024-11-05',
-        serverInfo: { name: 'laurelinos', version: '0.1.0-alpha.0' },
-        capabilities: { tools: {} }
-      });
-      return;
-    }
-    if (method === 'tools/list') {
-      rpcResult(id, {
-        tools: [
-          { name: 'get_status', description: 'Return local LaurelinOS runtime status.', inputSchema: { type: 'object', properties: {} } },
-          { name: 'get_daily_brief', description: 'Return a synthetic daily founder brief.', inputSchema: { type: 'object', properties: {} } },
-          { name: 'get_open_loops', description: 'Return synthetic open loops.', inputSchema: { type: 'object', properties: {} } }
-        ]
-      });
-      return;
-    }
-    if (method === 'tools/call') {
-      const brain = loadDemoBrain(repoRoot);
-      if (params.name === 'get_status') {
-        rpcResult(id, { content: [{ type: 'text', text: JSON.stringify({ status: 'ok', repo: 'Finberg-Laurelin-CEO/laurelinos' }, null, 2) }] });
-        return;
-      }
-      if (params.name === 'get_daily_brief') {
-        rpcResult(id, { content: [{ type: 'text', text: JSON.stringify(buildDailyBrief(brain), null, 2) }] });
-        return;
-      }
-      if (params.name === 'get_open_loops') {
-        rpcResult(id, { content: [{ type: 'text', text: JSON.stringify({ openLoops: detectOpenLoops(brain) }, null, 2) }] });
-        return;
-      }
-      rpcError(id, -32602, `Unknown tool: ${params.name}`);
-      return;
-    }
-    if (method === 'notifications/initialized') return;
-    rpcError(id, -32601, `Unknown method: ${method}`);
-  } catch (error) {
-    rpcError(id, -32000, error instanceof Error ? error.message : String(error));
-  }
 }
 
 const command = args[0];

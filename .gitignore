@@ -1,0 +1,40 @@
+# dependencies
+node_modules/
+.pnpm-store/
+.bun/
+
+# build outputs
+dist/
+build/
+coverage/
+.next/
+.vercel/
+
+# env/secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+secrets/
+
+# local runtime state
+.laurelinos/
+*.pglite/
+brain.pglite/
+*.sqlite
+*.sqlite3
+
+# private data
+private/
+customer-data/
+obsidian-vault/
+brain-data/
+exports/
+
+# OS/editor
+.DS_Store
+.vscode/
+.idea/

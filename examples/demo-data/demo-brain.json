@@ -1,0 +1,128 @@
+{
+  "generated_for": "LaurelinOS public MVP synthetic demo",
+  "warning": "Synthetic data only. Do not replace with real private customer or Laurelin data in this public repo.",
+  "organisation": {
+    "id": "org_arclight_labs",
+    "name": "ArcLight Labs",
+    "description": "Synthetic hard-tech startup used to demonstrate company-brain workflows."
+  },
+  "people": [
+    {
+      "id": "person_maya_chen",
+      "name": "Maya Chen",
+      "role": "Founder / CEO",
+      "company": "ArcLight Labs"
+    },
+    {
+      "id": "person_sam_rivera",
+      "name": "Sam Rivera",
+      "role": "Partner",
+      "company": "Northstar Ventures"
+    },
+    {
+      "id": "person_elena_patel",
+      "name": "Elena Patel",
+      "role": "Pilot customer lead",
+      "company": "Atlas Manufacturing"
+    },
+    {
+      "id": "person_omar_ahmed",
+      "name": "Omar Ahmed",
+      "role": "Engineering lead",
+      "company": "ArcLight Labs"
+    }
+  ],
+  "artefacts": [
+    {
+      "id": "email_2026_06_03_northstar_deck",
+      "type": "email",
+      "date": "2026-06-03",
+      "from": "Sam Rivera",
+      "to": "Maya Chen",
+      "title": "Revised deck and pilot metrics",
+      "summary": "Sam asked Maya to send the revised deck and the May pilot metrics before the partner meeting.",
+      "entities": ["person_sam_rivera", "person_maya_chen"],
+      "commitments": ["commit_send_revised_deck"]
+    },
+    {
+      "id": "meeting_2026_06_04_atlas_risk",
+      "type": "meeting_note",
+      "date": "2026-06-04",
+      "title": "Atlas Manufacturing pilot call",
+      "summary": "Elena said Atlas is worried about onboarding delays and needs a concrete mitigation plan this week.",
+      "entities": ["person_elena_patel", "person_maya_chen"],
+      "commitments": ["commit_send_atlas_mitigation"]
+    },
+    {
+      "id": "github_issue_42_onboarding",
+      "type": "github_issue",
+      "date": "2026-06-05",
+      "title": "Finish onboarding checklist automation",
+      "summary": "Omar marked onboarding checklist automation as blocked on calendar permission decisions.",
+      "entities": ["person_omar_ahmed"],
+      "commitments": ["commit_resolve_calendar_scope"]
+    },
+    {
+      "id": "decision_2026_06_05_subscription_compute",
+      "type": "decision_note",
+      "date": "2026-06-05",
+      "title": "Use customer subscriptions and BYOK first",
+      "summary": "The team decided that LaurelinOS should use user-side Claude/Codex subscriptions and BYOK where possible before bundling managed compute.",
+      "entities": ["person_maya_chen"],
+      "commitments": []
+    },
+    {
+      "id": "calendar_2026_06_08_northstar_partner_meeting",
+      "type": "calendar_event",
+      "date": "2026-06-08",
+      "title": "Northstar partner meeting",
+      "summary": "Maya is scheduled to meet Northstar Ventures about seed financing.",
+      "entities": ["person_sam_rivera", "person_maya_chen"],
+      "commitments": []
+    }
+  ],
+  "commitments": [
+    {
+      "id": "commit_send_revised_deck",
+      "owner": "Maya Chen",
+      "counterparty": "Sam Rivera",
+      "description": "Send revised deck and May pilot metrics before Northstar partner meeting.",
+      "created_at": "2026-06-03",
+      "due_at": "2026-06-07",
+      "status": "open",
+      "severity": "high",
+      "source_id": "email_2026_06_03_northstar_deck",
+      "recommended_action": "Draft a concise email to Sam with the revised deck and pilot metrics attached."
+    },
+    {
+      "id": "commit_send_atlas_mitigation",
+      "owner": "Maya Chen",
+      "counterparty": "Elena Patel",
+      "description": "Send Atlas Manufacturing a mitigation plan for onboarding delays.",
+      "created_at": "2026-06-04",
+      "due_at": "2026-06-07",
+      "status": "open",
+      "severity": "high",
+      "source_id": "meeting_2026_06_04_atlas_risk",
+      "recommended_action": "Create a customer-risk task and draft a mitigation email for Elena."
+    },
+    {
+      "id": "commit_resolve_calendar_scope",
+      "owner": "Omar Ahmed",
+      "counterparty": "Maya Chen",
+      "description": "Resolve calendar permission scope so onboarding automation can ship.",
+      "created_at": "2026-06-05",
+      "due_at": "2026-06-09",
+      "status": "open",
+      "severity": "medium",
+      "source_id": "github_issue_42_onboarding",
+      "recommended_action": "Ask Omar for the smallest OAuth scope needed for the first onboarding workflow."
+    }
+  ],
+  "daily_changes": [
+    "Northstar requested revised deck and pilot metrics.",
+    "Atlas Manufacturing flagged onboarding-delay risk.",
+    "Engineering is blocked on calendar permission scope.",
+    "Team decided to support customer subscriptions and BYOK before bundled compute."
+  ]
+}

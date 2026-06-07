@@ -1,0 +1,14 @@
+{
+  "project": "laurelinos",
+  "repository": "https://github.com/Finberg-Laurelin-CEO/laurelinos",
+  "description": "Local-first AI-native OS / company brain MVP. Use one isolated worktree per agent task.",
+  "recommendedBranches": [
+    "feat/cli-doctor-init",
+    "feat/demo-workflows",
+    "feat/gbrain-adapter",
+    "feat/mcp-server",
+    "docs/pricing-stripe",
+    "docs/laurelinos-dev"
+  ],
+  "agentInstructions": "Read AGENTS.md and prompts/MASTER_BUILD_PROMPT.md before coding. Do not build the website first. Do not commit secrets. Use synthetic data only. Keep npm run check passing."
+}

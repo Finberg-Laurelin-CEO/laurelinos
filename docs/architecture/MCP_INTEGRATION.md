@@ -20,14 +20,29 @@ The server reads newline-delimited JSON-RPC messages from stdin and writes JSON-
 
 ```text
 get_status
+list_sources
+search_memory
+get_source
+list_feedback
+record_feedback
 get_daily_brief
 get_open_loops
 prepare_meeting
 ```
 
-These tools are synthetic, read-only, local by default, and backed by `examples/demo-data/demo-brain.json`.
+These tools are local by default. Demo workflow tools are backed by `examples/demo-data/demo-brain.json`; memory tools use the approved-source local index in `.laurelinos/state/`.
 
-`get_status` reports that the server is using stdio transport, read-only mode, synthetic demo data, and approval-gated external actions.
+`get_status` reports stdio transport, local runtime status, indexed document count, and approval-gated external action posture.
+
+`list_sources` returns source approval policy and configured source records.
+
+`search_memory` searches the local approved-source index and returns source IDs, snippets, and feedback counts.
+
+`get_source` returns one indexed source document by source ID.
+
+`list_feedback` returns local correction/preference records.
+
+`record_feedback` records local feedback only when called with `approved: true`.
 
 `get_daily_brief` returns the synthetic founder brief with source IDs.
 
@@ -48,8 +63,9 @@ printf '%s\n' \
 Expected behavior:
 
 - `initialize` returns LaurelinOS server metadata and tool capability.
-- `tools/list` returns `get_status`, `get_daily_brief`, `get_open_loops`, and `prepare_meeting`.
+- `tools/list` returns status, source policy, memory search/source, feedback, and synthetic workflow tools.
 - `tools/call prepare_meeting` returns synthetic meeting prep with source IDs.
+- `tools/call search_memory` returns local approved-source search results after indexing.
 
 ## Later tools
 
@@ -61,7 +77,7 @@ update_crm
 schedule_meeting
 ```
 
-All write tools require approval gates before implementation.
+The only current MCP mutation is `record_feedback`, which writes local feedback and requires `approved: true`. External write tools require stronger approval gates before implementation.
 
 ## Transport
 

@@ -51,7 +51,7 @@ Approved local sources
 
 ## Current local MVP status
 
-The active MVP runtime is now a stdlib-only Python CLI/MCP core, with the earlier Node implementation kept temporarily as a compatibility reference during migration. It runs locally with synthetic data only.
+The active MVP runtime is now a stdlib-only Python CLI/MCP core, with the earlier Node implementation kept temporarily as a compatibility reference during migration. It runs synthetic demo workflows and can build a local memory index from explicitly approved text-like sources.
 
 Working now:
 
@@ -65,6 +65,9 @@ npm run dev -- sources list
 npm run dev -- sources add demo ./examples/demo-data
 npm run dev -- sources show demo
 npm run dev -- sources approve demo
+npm run dev -- sources scan demo --json
+npm run dev -- sources index demo --json
+npm run dev -- brain search "Northstar" --json
 npm run dev -- audit log
 npm run dev -- license status
 npm run dev -- setup agent openclaw --json
@@ -105,6 +108,18 @@ npm run dev -- open-loops --demo
 npm run dev -- prepare-meeting --demo
 ```
 
+Try a local approved-source memory flow:
+
+```bash
+npm run dev -- sources add demo ./examples/demo-data
+npm run dev -- sources approve demo
+npm run dev -- sources scan demo --json
+npm run dev -- sources index demo --json
+npm run dev -- brain search "Northstar" --json
+```
+
+This reads only the approved `demo` source, indexes supported text-like files, and keeps the index under `.laurelinos/state/`.
+
 To install the CLI globally from the local repo while developing:
 
 ```bash
@@ -122,11 +137,16 @@ laurelinos sources list
 laurelinos sources add <name> <path>
 laurelinos sources show <name>
 laurelinos sources approve <name>
+laurelinos sources scan <name>
+laurelinos sources index <name>
 laurelinos audit log
 laurelinos license status
 laurelinos setup agent <generic|claude|codex|cursor|hermes|openclaw>
 laurelinos setup verify
 laurelinos brain status
+laurelinos brain search <query>
+laurelinos brain show <source-id>
+laurelinos brain feedback add <source-id> <note>
 laurelinos brief --demo
 laurelinos open-loops --demo
 laurelinos prepare-meeting --demo
@@ -160,17 +180,20 @@ The MVP is moving to a stdlib-only Python runtime because it is better suited fo
 2. Keep synthetic demo commands working.
 3. Keep moving active runtime code from JavaScript into Python.
 4. Add GBrain behind an adapter, not as the whole product.
-5. Expose daily brief, open-loop detection, and meeting prep through local stdio MCP.
-6. Make setup agent-readable so Claude/Codex/Hermes/OpenClaw-style environments can configure LaurelinOS without manual MCP guesswork.
-7. Add Claude/Codex subscription-friendly workflows through official local clients/connectors.
-8. Add Stripe and hosted provisioning only after the tool is valuable locally.
-9. Build the `laurelinos.dev` docs/subscription site after the MVP works.
+5. Build approved-source local memory before broad connectors.
+6. Expose search, source policy, daily brief, open-loop detection, and meeting prep through local stdio MCP.
+7. Make setup agent-readable so Claude/Codex/Hermes/OpenClaw-style environments can configure LaurelinOS without manual MCP guesswork.
+8. Add Claude/Codex subscription-friendly workflows through official local clients/connectors.
+9. Support local machine and VPS deployment modes without exposing unauthenticated public MCP.
+10. Add Stripe and hosted provisioning only after the tool is valuable locally.
+11. Build the `laurelinos.dev` docs/subscription site after the MVP works.
 
 ## Not required for v0
 
-- No GCP VM or VPS is required.
+- No GCP VM or VPS is required for local use.
+- VPS mode is allowed later only as user-owned compute with private access, authentication, and no unauthenticated public MCP.
 - No hosted onboarding is required.
-- No public ports should be opened.
+- No public ports should be opened for v0.
 - No remote MCP endpoint should be exposed.
 - No live Stripe integration should be built.
 - No public website should be built before the local runtime proves value.

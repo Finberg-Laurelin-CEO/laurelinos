@@ -41,13 +41,17 @@ clear
 python3 ./bin/laurelinos.py doctor
 python3 ./bin/laurelinos.py license status
 python3 ./bin/laurelinos.py setup agent openclaw --json
+python3 ./bin/laurelinos.py sources add demo ./examples/demo-data
+python3 ./bin/laurelinos.py sources approve demo
+python3 ./bin/laurelinos.py sources index demo --json
+python3 ./bin/laurelinos.py brain search Northstar --json
 python3 ./bin/laurelinos.py brief --demo
 python3 ./bin/laurelinos.py open-loops --demo
 python3 ./bin/laurelinos.py prepare-meeting --demo
 printf '%s\n' \
   '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}' \
   '{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}' \
-  '{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"get_open_loops","arguments":{}}}' \
+  '{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"search_memory","arguments":{"query":"Northstar"}}}' \
   | python3 ./bin/laurelinos.py mcp serve
 ```
 

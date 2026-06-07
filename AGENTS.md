@@ -58,7 +58,12 @@ laurelinos doctor
 laurelinos init --local
 laurelinos sources list
 laurelinos sources add <name> <path>
+laurelinos sources approve <name>
+laurelinos sources scan <name>
+laurelinos sources index <name>
 laurelinos brain status
+laurelinos brain search <query>
+laurelinos brain show <source-id>
 laurelinos brief --demo
 laurelinos open-loops --demo
 laurelinos prepare-meeting --demo

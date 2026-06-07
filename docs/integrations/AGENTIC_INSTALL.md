@@ -162,7 +162,7 @@ For first paid pilots, Joseph can ask the customer's agent to run this checklist
 A setup is successful when:
 
 - the user's chosen agent can list LaurelinOS MCP tools;
-- the agent can call `get_daily_brief`, `get_open_loops`, or `prepare_meeting`;
+- the agent can call `list_sources`, `search_memory`, `get_source`, `get_daily_brief`, `get_open_loops`, or `prepare_meeting`;
 - no third-party agent was installed by LaurelinOS;
 - no raw model credentials were handled by LaurelinOS;
 - no real source contents were read or indexed;

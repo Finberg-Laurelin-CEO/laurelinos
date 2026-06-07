@@ -79,6 +79,11 @@ First tools:
 
 ```text
 get_status
+list_sources
+search_memory
+get_source
+list_feedback
+record_feedback
 get_daily_brief
 get_open_loops
 prepare_meeting
@@ -92,7 +97,7 @@ write_memory
 create_task
 ```
 
-Write tools require approval gates.
+`record_feedback` is the first local mutation and requires explicit approval. External write tools require stronger approval gates.
 
 ## Runtime state rule
 

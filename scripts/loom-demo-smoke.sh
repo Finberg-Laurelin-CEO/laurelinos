@@ -35,6 +35,9 @@ echo "## init --local and source approval audit"
   python3 "$CLI" sources add demo "$ROOT/examples/demo-data"
   python3 "$CLI" sources show demo
   python3 "$CLI" sources approve demo
+  python3 "$CLI" sources scan demo --json
+  python3 "$CLI" sources index demo --json
+  python3 "$CLI" brain search Northstar --json
   python3 "$CLI" audit log
 )
 
@@ -55,5 +58,5 @@ echo "## mcp stdio smoke"
 printf '%s\n' \
   '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}' \
   '{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}' \
-  '{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"get_open_loops","arguments":{}}}' \
+  '{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"search_memory","arguments":{"query":"Northstar"}}}' \
   | python3 "$CLI" mcp serve

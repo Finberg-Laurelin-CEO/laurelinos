@@ -26,7 +26,7 @@ npm test
 npm run check
 ```
 
-`npm run check` runs Node compatibility tests, Python runtime tests, and Python CLI smoke commands for `doctor`, `brief --demo`, `open-loops --demo`, and `prepare-meeting --demo`.
+`npm run check` runs Node compatibility tests, Python runtime tests, and Python CLI smoke commands for `doctor`, approved-source scan/index/search, `brief --demo`, `open-loops --demo`, and `prepare-meeting --demo`.
 
 ## Try the local MVP
 
@@ -37,6 +37,9 @@ npm run dev -- sources list
 npm run dev -- sources add demo ./examples/demo-data
 npm run dev -- sources show demo
 npm run dev -- sources approve demo
+npm run dev -- sources scan demo --json
+npm run dev -- sources index demo --json
+npm run dev -- brain search "Northstar" --json
 npm run dev -- audit log
 npm run dev -- license status
 npm run dev -- setup agent hermes --json
@@ -74,7 +77,24 @@ npm run dev -- sources approve notes
 npm run dev -- audit log
 ```
 
-Approval updates the source metadata and audit log, but still does not index or read source file contents. Do not point this at private folders for demos unless the user has explicitly approved the source and the data will not be committed.
+Approval updates the source metadata and audit log, but still does not index or read source file contents.
+
+## Index and search approved local memory
+
+Only approved sources can be scanned or indexed:
+
+```bash
+npm run dev -- sources scan notes --json
+npm run dev -- sources index notes --json
+npm run dev -- brain search "customer risk" --json
+npm run dev -- brain show <source-id> --json
+npm run dev -- brain feedback add <source-id> "Prefer customer-risk framing" --label preference
+npm run dev -- brain feedback list --json
+```
+
+The first indexer supports text-like files: `.md`, `.markdown`, `.txt`, `.json`, and `.csv`. Hidden paths, unsupported extensions, large files, and likely secrets are skipped. The index is stored locally in `.laurelinos/state/memory-index.json`; feedback is stored in `.laurelinos/state/feedback.jsonl`.
+
+Do not point this at private folders for demos unless the user has explicitly approved the source and the data will not be committed.
 
 ## License status and local activation
 
@@ -149,6 +169,11 @@ Expected tools:
 
 ```text
 get_status
+list_sources
+search_memory
+get_source
+list_feedback
+record_feedback
 get_daily_brief
 get_open_loops
 prepare_meeting

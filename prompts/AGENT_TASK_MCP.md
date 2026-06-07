@@ -33,6 +33,11 @@ Expose:
 
 ```text
 get_status
+list_sources
+search_memory
+get_source
+list_feedback
+record_feedback
 get_daily_brief
 get_open_loops
 prepare_meeting
@@ -46,6 +51,7 @@ prepare_meeting
 - No public ports.
 - No external writes.
 - No secrets.
+- `record_feedback` may write local feedback only when the call includes explicit approval.
 - All tool outputs should be structured and include source IDs where available.
 - Include local usage docs.
 

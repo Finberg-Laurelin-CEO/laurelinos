@@ -497,3 +497,47 @@ Security notes:
 - Source add/approve still records paths and audit events without reading or indexing source file contents.
 - No Hermes/OpenClaw install, model-provider credential handling, external writes, hosted services, public ports, remote MCP, or real source indexing added.
 - Rust remains a future option for native packaging/indexing once toolchain and product behavior justify it.
+
+## 2026-06-07 — Approved-source memory index and feedback loop
+
+Task: build the next Python company-brain slice: approved-source scan/index, local memory search/show, MCP memory tools, and local feedback records for self-learning signals.
+
+Files:
+
+- `py/laurelinos_core/runtime.py`;
+- `tests/python_runtime_test.py`;
+- `README.md`;
+- `MVP_SPEC.md`;
+- `AGENTS.md`;
+- `docs/LOCAL_BUILD_INSTRUCTIONS.md`;
+- `docs/architecture/ARCHITECTURE.md`;
+- `docs/architecture/MCP_INTEGRATION.md`;
+- `docs/demo/LOOM_DEMO_SCRIPT.md`;
+- `docs/integrations/AGENTIC_INSTALL.md`;
+- `docs/integrations/HERMES.md`;
+- `docs/integrations/OPENCLAW.md`;
+- `prompts/MASTER_BUILD_PROMPT.md`;
+- `prompts/AGENT_TASK_CLI.md`;
+- `prompts/AGENT_TASK_MCP.md`;
+- `scripts/loom-demo-smoke.sh`;
+- `docs/BUILD_LOG.md`.
+
+Commands run:
+
+```bash
+python3 ./bin/laurelinos.py sources scan <approved-source> --json
+python3 ./bin/laurelinos.py sources index <approved-source> --json
+python3 ./bin/laurelinos.py brain search pilot --json
+python3 ./bin/laurelinos.py brain show <source-id> --json
+python3 ./bin/laurelinos.py brain feedback add <source-id> "Prefer investor-context summary" --label preference --json
+printf '%s\n' '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"search_memory","arguments":{"query":"pilot"}}}' | python3 ./bin/laurelinos.py mcp serve
+```
+
+Security notes:
+
+- Scan/index require explicit source approval and refuse unapproved sources.
+- Initial indexer supports text-like files only: `.md`, `.markdown`, `.txt`, `.json`, `.csv`.
+- Hidden paths, unsupported extensions, large files, and likely secrets are skipped.
+- Memory index and feedback records are local under `.laurelinos/state/`.
+- MCP `record_feedback` is the only mutation added and requires `approved: true`.
+- No external writes, model training, hosted sync, public ports, remote MCP, or broad filesystem indexing added.

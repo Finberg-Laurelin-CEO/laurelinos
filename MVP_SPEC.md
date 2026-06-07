@@ -116,6 +116,14 @@ Adds a candidate source path to local config, but does not index the folder yet.
 
 Marks a candidate source approved for future indexing and writes an audit event. It still does not read or index file contents.
 
+### `laurelinos sources scan <name>`
+
+Dry-runs an approved source and reports eligible/skipped files. Only approved sources can be scanned.
+
+### `laurelinos sources index <name>`
+
+Indexes supported text-like files from an approved source into the local memory index. Hidden paths, unsupported extensions, large files, and likely secrets are skipped.
+
 ### `laurelinos brain status`
 
 Shows the current local brain/runtime status:
@@ -125,6 +133,18 @@ Shows the current local brain/runtime status:
 - whether GBrain is installed;
 - whether demo data is available;
 - whether MCP server code exists.
+
+### `laurelinos brain search <query>`
+
+Searches the local approved-source memory index and returns source IDs, snippets, hashes, and feedback counts.
+
+### `laurelinos brain show <source-id>`
+
+Returns one indexed source document with content and local feedback records.
+
+### `laurelinos brain feedback add <source-id> <note>`
+
+Records local user feedback/corrections as self-learning signals. This does not train a model or send data externally.
 
 ### `laurelinos brief --demo`
 
@@ -144,6 +164,11 @@ Starts a minimal MCP-compatible stdio server exposing:
 
 ```text
 get_status
+list_sources
+search_memory
+get_source
+list_feedback
+record_feedback
 get_daily_brief
 get_open_loops
 prepare_meeting
@@ -167,7 +192,12 @@ And these work manually:
 npm run dev -- doctor
 npm run dev -- init --local
 npm run dev -- sources list
+npm run dev -- sources add demo ./examples/demo-data
+npm run dev -- sources approve demo
+npm run dev -- sources scan demo --json
+npm run dev -- sources index demo --json
 npm run dev -- brain status
+npm run dev -- brain search "Northstar" --json
 npm run dev -- brief --demo
 npm run dev -- open-loops --demo
 npm run dev -- prepare-meeting --demo

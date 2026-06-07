@@ -43,6 +43,11 @@ The server is stdio-only. It does not bind a port or expose a remote endpoint.
 
 ```text
 get_status
+list_sources
+search_memory
+get_source
+list_feedback
+record_feedback
 get_daily_brief
 get_open_loops
 prepare_meeting
@@ -115,7 +120,7 @@ printf '%s\n' \
 Expected result:
 
 - initialize returns server metadata;
-- tools/list includes `get_status`, `get_daily_brief`, `get_open_loops`, and `prepare_meeting`;
+- tools/list includes source policy, memory search/source, feedback, and synthetic workflow tools;
 - get_open_loops returns synthetic open loops with source IDs and approval flags.
 
 ## Future tools for Hermes

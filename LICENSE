@@ -1,52 +1,99 @@
-LaurelinOS Proprietary Source-Available License
-Version 1.0 — June 7, 2026
+LaurelinOS Proprietary Evaluation License
+Version 1.1 — June 7, 2026
 
 Copyright (c) 2026 Laurelin / Finberg-Laurelin-CEO. All rights reserved.
 
-This repository and all software, documentation, examples, prompts, workflows, package code, and related materials in it are proprietary to Laurelin / Finberg-Laurelin-CEO unless a file states otherwise in writing.
+IMPORTANT: LaurelinOS is proprietary software. This repository is visible for evaluation and review only. It is not open source, free software, public domain software, or permissively licensed software.
 
-1. Limited evaluation permission
+If you do not agree to these terms, you may not use, copy, run, modify, distribute, host, deploy, train on, or otherwise exploit this software or any part of it.
 
-You may view the source code and run an unmodified local copy solely to evaluate LaurelinOS for a potential commercial relationship with Laurelin.
+1. Covered materials
 
-This limited permission is personal, non-exclusive, non-transferable, revocable, and does not permit production use.
+This license applies to this repository and all software, source code, object code, documentation, examples, prompts, workflows, scripts, tests, package code, product names, plans, designs, and related materials in it, unless a specific file states otherwise in writing.
 
-2. Restrictions
+Third-party materials remain governed by their own licenses. This license does not grant rights to any third-party material beyond what that third party allows.
+
+2. Narrow evaluation permission
+
+Laurelin grants you a limited, personal, non-exclusive, non-transferable, revocable permission to view the source code and run an unmodified local copy solely to evaluate LaurelinOS for a potential commercial relationship with Laurelin.
+
+This evaluation permission:
+
+- does not permit production use;
+- does not permit internal business use except evaluation;
+- does not permit use with real customer, regulated, confidential, or production data;
+- does not permit redistribution, hosting, sublicensing, managed services, or resale;
+- does not transfer ownership or intellectual-property rights.
+
+3. No commercial use without written agreement
+
+Commercial use requires a separate written agreement signed or otherwise expressly approved in writing by Laurelin.
+
+Commercial use includes, without limitation:
+
+- using LaurelinOS in production;
+- using LaurelinOS for a business, employer, client, customer, or revenue-generating workflow;
+- providing hosted, managed, consulting, agency, outsourcing, service-bureau, implementation, support, or integration services based on LaurelinOS;
+- bundling, embedding, wrapping, reselling, repackaging, white-labeling, or distributing LaurelinOS;
+- using LaurelinOS to power or improve a paid product, internal platform, customer workflow, or competing service;
+- using LaurelinOS beyond a time-limited evaluation.
+
+4. Restrictions
 
 Except with Laurelin's prior written permission, you may not:
 
-- copy, reproduce, redistribute, sublicense, publish, sell, rent, lease, or provide the software or any substantial portion of it to any third party;
-- modify, prepare derivative works from, or create a competing product or service based on the software;
-- use the software to provide hosted, managed, consulting, agency, outsourcing, service-bureau, or commercial services to any third party;
-- remove or obscure copyright, license, source, attribution, safety, or provenance notices;
-- use LaurelinOS trademarks, names, logos, or branding except to refer accurately to the project;
-- bypass, disable, or misrepresent license, entitlement, approval-gate, audit, safety, or source-scoping mechanisms;
-- use the software with real customer, private, regulated, or production data without a separate written agreement with Laurelin.
+- copy, reproduce, redistribute, mirror, publish, sublicense, sell, rent, lease, lend, or provide LaurelinOS or any substantial portion of it to any third party;
+- create or publish public forks, mirrors, package distributions, container images, binaries, hosted demos, or derivative repositories based on LaurelinOS;
+- modify, adapt, translate, prepare derivative works from, or create extensions or plugins based on LaurelinOS except for private evaluation changes that are not used, shared, published, or deployed;
+- build, train, support, benchmark, evaluate, or improve a competing or substitute product, agent runtime, memory layer, company-brain system, MCP server, workflow engine, founder OS, or commercial service using LaurelinOS or information derived from it;
+- use LaurelinOS or repository contents for machine-learning training, fine-tuning, distillation, embedding generation, retrieval corpora, benchmark datasets, synthetic-data generation, model evaluation, or automated code-generation datasets;
+- scrape, mine, bulk download, or automatically extract repository contents except as necessary to clone and evaluate an unmodified local copy;
+- use LaurelinOS to provide hosted, managed, consulting, agency, outsourcing, service-bureau, or commercial services to any third party;
+- deploy LaurelinOS as a network service, expose it over public ports, provide remote MCP access, or make it available to users outside your own evaluation environment;
+- bypass, disable, remove, alter, or misrepresent license, entitlement, approval-gate, audit, safety, source-scoping, attribution, or provenance mechanisms;
+- remove or obscure copyright, license, attribution, trademark, safety, or provenance notices;
+- use LaurelinOS trademarks, names, logos, domain names, product names, or branding except to refer accurately to LaurelinOS as Laurelin's product;
+- claim compatibility, endorsement, partnership, sponsorship, certification, or affiliation with Laurelin unless Laurelin has approved that claim in writing;
+- use the software in a way that violates law, privacy rights, data-protection obligations, third-party terms, or model-provider terms.
 
-3. Commercial licenses
+5. Reservation of rights
 
-Commercial use, managed deployments, hosted services, paid pilots, production use, and redistribution require a separate written agreement with Laurelin.
+Laurelin reserves all rights not expressly granted in this license.
 
-4. Feedback
+No patent, trademark, copyright, trade-secret, database, moral-rights, or other intellectual-property license is granted except the narrow evaluation permission expressly stated above.
 
-If you provide feedback, ideas, bug reports, suggestions, or other comments, you grant Laurelin a perpetual, worldwide, royalty-free right to use them without restriction or compensation.
+6. Confidential and proprietary character
 
-5. Third-party materials
+The structure, design, workflows, prompts, plans, architecture, naming, product direction, and commercial packaging reflected in LaurelinOS are proprietary to Laurelin.
 
-Third-party dependencies, tools, and externally referenced projects remain governed by their own licenses. This license does not grant rights to third-party materials beyond what their respective owners allow.
+Making this repository visible does not waive trade-secret, copyright, trademark, contract, unfair-competition, or other rights available to Laurelin.
 
-6. No warranty
+7. Feedback
 
-THE SOFTWARE IS PROVIDED "AS IS" AND WITHOUT WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND NON-INFRINGEMENT.
+If you provide feedback, ideas, bug reports, suggestions, research, designs, or other comments about LaurelinOS, you grant Laurelin a perpetual, worldwide, irrevocable, transferable, sublicensable, royalty-free right to use them for any purpose without restriction or compensation.
 
-7. Limitation of liability
+8. Termination
 
-TO THE MAXIMUM EXTENT PERMITTED BY LAW, LAURELIN AND ITS CONTRIBUTORS WILL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, EXEMPLARY, OR PUNITIVE DAMAGES, OR FOR ANY LOSS OF PROFITS, REVENUE, DATA, GOODWILL, OR BUSINESS OPPORTUNITY, ARISING FROM OR RELATED TO THE SOFTWARE OR THIS LICENSE.
+Your permission under this license terminates automatically if you breach these terms.
 
-8. Prior versions
+Upon termination, you must immediately stop using LaurelinOS and delete all copies in your possession or control, except copies you are legally required to retain for archival compliance.
+
+9. No warranty
+
+THE SOFTWARE IS PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY KIND, EXPRESS, IMPLIED, STATUTORY, OR OTHERWISE, INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, NON-INFRINGEMENT, SECURITY, ACCURACY, AVAILABILITY, OR ERROR-FREE OPERATION.
+
+10. Limitation of liability
+
+TO THE MAXIMUM EXTENT PERMITTED BY LAW, LAURELIN AND ITS CONTRIBUTORS WILL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, EXEMPLARY, PUNITIVE, OR ENHANCED DAMAGES, OR FOR ANY LOSS OF PROFITS, REVENUE, DATA, GOODWILL, BUSINESS OPPORTUNITY, OR BUSINESS INTERRUPTION, ARISING FROM OR RELATED TO LAURELINOS OR THIS LICENSE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+
+11. Injunctive relief
+
+You acknowledge that unauthorized use, copying, distribution, hosting, model training, or competitive use may cause irreparable harm to Laurelin for which monetary damages may be inadequate. Laurelin may seek injunctive or equitable relief without posting bond where permitted by law.
+
+12. Prior versions
 
 This license applies to this version and later versions unless Laurelin states otherwise in writing. It does not retroactively change rights, if any, that were validly granted for earlier versions under a different license.
 
-9. Contact
+13. Contact
 
-For commercial licensing, pilot access, or written permission, contact Laurelin / Finberg-Laurelin-CEO through the project owner.
+For commercial licensing, paid pilots, FounderOS access, managed setup, redistribution, production use, or written permission, contact Laurelin / Finberg-Laurelin-CEO through the project owner.

@@ -10,6 +10,12 @@ Canonical repository:
 https://github.com/Finberg-Laurelin-CEO/laurelinos
 ```
 
+## License and use restrictions
+
+LaurelinOS is proprietary evaluation software. It is not open source, not MIT licensed, and not licensed for production, redistribution, hosting, public forks/mirrors, AI training datasets, competitive use, or commercial use without a separate written agreement with Laurelin.
+
+See `LICENSE` and `NOTICE.md` before using or copying anything in this repository.
+
 ## What this repo is for
 
 This repository is the public OS layer for LaurelinOS:
@@ -135,6 +141,10 @@ docs/                        architecture, integrations, Superset, setup, pricin
 apps/docs-site/              future docs site for laurelinos.dev, not v0
 .superset/                   suggested Superset task configuration
 ```
+
+## Stack rationale
+
+The MVP is plain JavaScript/Node because this phase needs a zero-dependency local CLI and MCP stdio runtime that agents can install/configure easily. See `docs/architecture/STACK_RATIONALE.md`.
 
 ## Build priority
 

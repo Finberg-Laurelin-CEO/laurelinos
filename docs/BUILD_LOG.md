@@ -271,3 +271,32 @@ Security notes:
 - `sources add` records a candidate and audit event only.
 - `sources approve` records explicit approval and an audit event only.
 - No indexing, file-content reads, external writes, hosted services, public ports, or remote MCP added.
+
+## 2026-06-07 — Local license status and activation
+
+Task: add local-only license status and manual activation commands for paid pilot planning.
+
+Files:
+
+- `bin/laurelinos.mjs`;
+- `lib/license.mjs`;
+- `tests/cli.test.mjs`;
+- `README.md`;
+- `docs/LOCAL_BUILD_INSTRUCTIONS.md`;
+- `docs/deployment/SUBSCRIPTION_AND_LICENSE_PLAN.md`;
+- `packages/cli/README.md`;
+- `docs/BUILD_LOG.md`.
+
+Commands run:
+
+```bash
+npm test
+npm run check
+git diff --check
+```
+
+Security notes:
+
+- `license status` works in free/demo mode without a token.
+- `license activate <token>` stores only a SHA-256 token hash and writes an audit event.
+- No raw activation token, Stripe secret, webhook code, hosted entitlement lookup, GCP/VPS resource, public port, or remote MCP added.

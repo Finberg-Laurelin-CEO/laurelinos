@@ -38,6 +38,7 @@ npm run dev -- sources add demo ./examples/demo-data
 npm run dev -- sources show demo
 npm run dev -- sources approve demo
 npm run dev -- audit log
+npm run dev -- license status
 npm run dev -- sources list
 npm run dev -- brain status
 npm run dev -- brief --demo
@@ -71,6 +72,23 @@ npm run dev -- audit log
 ```
 
 Approval updates the source metadata and audit log, but still does not index or read source file contents. Do not point this at private folders for demos unless the user has explicitly approved the source and the data will not be committed.
+
+## License status and local activation
+
+Demo commands do not require a license:
+
+```bash
+npm run dev -- license status
+```
+
+For manual paid pilots later, a Laurelin-issued activation token can create a local license record:
+
+```bash
+npm run dev -- license activate <token>
+npm run dev -- license status
+```
+
+The raw activation token is not stored or echoed. The current implementation is local-only and does not contact Stripe or a hosted entitlement service.
 
 ## Install local command
 

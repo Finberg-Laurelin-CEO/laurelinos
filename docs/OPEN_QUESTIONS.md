@@ -23,10 +23,12 @@
 
 ## Commercial
 
-1. Should the first paid plan be BYO-compute only, or include a small managed compute allowance later?
-2. Which Stripe prices exist in the Laurelin Stripe account?
-3. Should subscription checkout live on `laurelinos.dev`, Stripe Payment Links, or both after the local MVP is valuable?
-4. What is the first target MRR milestone after the internal demo: $1,000, $2,500, or $5,000?
+1. Settled for v1 planning: start with subscription + entitlement/license, not API credits.
+2. Settled for v1 planning: customers bring Claude/Codex/API-key compute first; bundled compute is a later add-on only after usage is measured.
+3. Which Stripe prices exist in the Laurelin Stripe account?
+4. Should subscription checkout live on `laurelinos.dev`, Stripe Payment Links, or both after the local MVP is valuable?
+5. Should early pilots use a manual license file, activation token, or private package token?
+6. What is the first target MRR milestone after the internal demo: $1,000, $2,500, or $5,000?
 
 ## Compliance
 

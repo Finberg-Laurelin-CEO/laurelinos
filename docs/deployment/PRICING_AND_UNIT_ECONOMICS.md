@@ -4,12 +4,15 @@
 
 Do not sell unlimited AI compute until usage is measured.
 
-The safest v1 pricing structure is:
+The safest v1 pricing structure is subscription + entitlement, not API credits:
 
 ```text
-Customer pays LaurelinOS for memory, workflows, onboarding, and operating layer.
+Customer pays LaurelinOS for memory, workflows, onboarding, support, and operating layer.
 Customer supplies Claude/Codex subscription or API keys for model compute.
+Laurelin issues a license/activation credential for paid FounderOS packaging later.
 ```
+
+See `SUBSCRIPTION_AND_LICENSE_PLAN.md` for the credential/provisioning plan.
 
 ## Initial plans
 

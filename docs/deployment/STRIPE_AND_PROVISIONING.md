@@ -6,6 +6,8 @@ Laurelin already has a Stripe account and bank account.
 
 LaurelinOS should not store raw credit-card data. Use Stripe-hosted checkout, Stripe Payment Links, or a hosted subscription flow. Store Stripe customer/subscription identifiers only.
 
+The commercial model should start as subscription + entitlement/license, not API credits. See `docs/deployment/SUBSCRIPTION_AND_LICENSE_PLAN.md` for the current plan.
+
 ## MVP sequencing
 
 Do not build Stripe before the local tool is useful.
@@ -16,9 +18,12 @@ Recommended order:
 2. Synthetic demo workflows work.
 3. MCP works locally.
 4. Manual paid pilot is possible.
-5. Stripe Payment Link or Checkout link is created.
-6. Webhook provisioning is added.
-7. Agentic onboarding is added.
+5. Customer receives install instructions and a license/activation credential.
+6. Stripe Payment Link or Checkout link is created.
+7. Webhook provisioning is added.
+8. Agentic onboarding is added.
+
+For early pilots, manual provisioning is acceptable: payment first, then Joseph sends the install instructions and activation credential. Automate only after the workflow is worth repeating.
 
 ## Subscription event loop later
 

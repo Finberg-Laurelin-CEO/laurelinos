@@ -182,3 +182,34 @@ Security notes:
 - Synthetic-data-only posture preserved.
 - No GCP, VPS, hosted onboarding, public port, remote MCP, or live Stripe work added.
 - No secrets or private Laurelin/customer data added.
+
+## 2026-06-07 — Subscription and license planning
+
+Task: document the first commercial packaging path: subscription + entitlement/license first, not API credits.
+
+Files:
+
+- `docs/deployment/SUBSCRIPTION_AND_LICENSE_PLAN.md`;
+- `docs/deployment/STRIPE_AND_PROVISIONING.md`;
+- `docs/deployment/PRICING_AND_UNIT_ECONOMICS.md`;
+- `docs/OPEN_QUESTIONS.md`;
+- `docs/BUILD_LOG.md`.
+
+Commands run:
+
+```bash
+npm test
+npm run check
+git diff --check
+```
+
+Unresolved questions:
+
+- Whether first paid pilots should receive a manual license file, activation token, or private package token.
+- Which exact Stripe prices and first MRR milestone Joseph wants.
+
+Security notes:
+
+- Planning only.
+- No live Stripe secrets, webhook code, hosted onboarding, GCP/VPS resources, public ports, remote MCP, API-credit metering, or bundled compute implementation added.
+- Activation tokens are documented as secrets that must not be logged.

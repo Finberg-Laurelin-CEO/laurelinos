@@ -1,12 +1,16 @@
 # Agent Task — Demo Workflows
 
-Build synthetic daily brief and open-loop detection.
+Deepen the synthetic daily brief, open-loop detection, and meeting-prep workflows.
 
 ## Branch
 
 ```text
 feat/demo-workflows
 ```
+
+## Current status on main
+
+Minimal synthetic `brief --demo` and `open-loops --demo` commands already work. This branch should improve quality and coverage without adding real data, model calls, or external APIs.
 
 ## Scope
 
@@ -22,16 +26,22 @@ tests/**
 docs/BUILD_LOG.md
 ```
 
-## Commands supported
+## Commands to maintain
 
 ```bash
 laurelinos brief --demo
 laurelinos open-loops --demo
 ```
 
+Optional local-only addition if it fits the branch:
+
+```bash
+laurelinos prepare-meeting --demo
+```
+
 ## Synthetic data requirements
 
-Create fake artefacts:
+Use fake artefacts only:
 
 - investor email;
 - founder meeting notes;
@@ -40,7 +50,7 @@ Create fake artefacts:
 - calendar item;
 - internal decision note.
 
-No real Laurelin data.
+No real Laurelin, customer, investor, or private Obsidian data.
 
 ## Output requirements
 
@@ -62,10 +72,13 @@ Open-loop detector should output:
 - recommended action;
 - whether approval is required.
 
+External actions must remain suggestions only. Do not send messages, create tasks, or write to external systems.
+
 ## Acceptance
 
 ```bash
 npm test
+npm run check
 npm run dev -- brief --demo
 npm run dev -- open-loops --demo
 ```

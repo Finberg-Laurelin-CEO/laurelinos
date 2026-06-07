@@ -29,9 +29,9 @@ The runtime owns state. Models do not own state.
 
 The user supplies compute through Claude/Codex subscriptions, provider API keys, or later optional hosted/local models. LaurelinOS supplies memory, workflows, MCP tools, approval gates, and the OS layer.
 
-## Existing v0
+## Existing v0 on main
 
-The repo starts with a zero-dependency Node CLI in:
+The pushed `main` branch includes the first local scaffold:
 
 ```text
 bin/laurelinos.mjs
@@ -39,31 +39,60 @@ lib/**
 examples/demo-data/demo-brain.json
 ```
 
-Keep the working commands alive:
+Keep these working commands alive:
 
 ```bash
 npm test
 npm run check
 npm run dev -- doctor
 npm run dev -- init --local
+npm run dev -- sources list
+npm run dev -- sources add demo ./examples/demo-data
+npm run dev -- brain status
 npm run dev -- brief --demo
 npm run dev -- open-loops --demo
+npm run dev -- mcp serve
+```
+
+## Branch state
+
+Already landed on `main`:
+
+```text
+plan/build-orchestration
+feat/cli-core
+```
+
+Use the remaining branches for focused improvements:
+
+```text
+feat/demo-workflows   deepen synthetic brief/open-loop/meeting-prep workflows
+feat/gbrain-adapter   add provider-neutral adapter boundary and stub, no real indexing
+feat/mcp-server       harden local stdio MCP and add automated MCP smoke tests
+docs/local-build      keep docs/prompts aligned with the local scaffold
+```
+
+Later, after the local runtime is useful:
+
+```text
+docs/stripe-provisioning-plan
+apps/docs-site / laurelinos.dev
+hosted onboarding/provisioning experiments
 ```
 
 ## Build order
 
 Build in this order:
 
-1. Stabilise repo/tooling scaffold.
-2. Keep CLI commands working.
-3. Improve `doctor` and `init`.
-4. Improve synthetic demo data.
-5. Improve `brief --demo`.
-6. Improve `open-loops --demo`.
-7. Create GBrain adapter interface with stub implementation.
-8. Improve MCP server exposing `get_status`, `get_daily_brief`, and `get_open_loops`.
-9. Add local integration docs.
-10. Only later: docs site and Stripe provisioning.
+1. Keep CLI commands working.
+2. Improve synthetic demo data.
+3. Improve `brief --demo`.
+4. Improve `open-loops --demo`.
+5. Add meeting-prep demo behavior if it stays synthetic and local.
+6. Create GBrain adapter interface with stub implementation.
+7. Improve MCP server exposing `get_status`, `get_daily_brief`, and `get_open_loops`.
+8. Add local integration docs.
+9. Only later: docs site, Stripe provisioning, hosted onboarding, and cloud infrastructure.
 
 Do not build the website first.
 
@@ -77,21 +106,8 @@ Never store raw credit-card data.
 Do not scrape model-provider web UIs.
 Use official local clients, MCP, SDKs, or API-key flows only.
 Do not claim SOC 2 compliance before audit.
-
-## Expected first implementation tasks
-
-Use one branch per task.
-
-Suggested branches:
-
-```text
-feat/cli-doctor-init
-feat/demo-workflows
-feat/gbrain-adapter
-feat/mcp-server
-docs/pricing-stripe
-docs/laurelinos-dev
-```
+Do not create GCP, VPS, or other cost-incurring cloud resources for v0.
+Do not expose remote MCP endpoints or open public ports for v0.
 
 ## Acceptance criteria for any branch
 

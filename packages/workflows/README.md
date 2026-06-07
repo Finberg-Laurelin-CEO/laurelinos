@@ -1,5 +1,7 @@
 # packages/workflows
 
-Placeholder package boundary for the LaurelinOS local-first MVP.
+Package boundary for daily brief, open-loop detection, meeting prep, and follow-up drafting workflows.
 
-The zero-dependency v0 implementation currently lives in `bin/` and `lib/` so the tool is runnable immediately. Move code into this package when the TypeScript monorepo is introduced.
+Current v0 workflow code lives in `lib/demo.mjs` and `lib/format.mjs` with synthetic data in `examples/demo-data/demo-brain.json`.
+
+Future workflow work should deepen synthetic demo quality, add source citations, and keep every external action approval-gated. Do not add model calls, external API calls, or real private data for v0.

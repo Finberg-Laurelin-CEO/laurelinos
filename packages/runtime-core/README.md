@@ -1,5 +1,11 @@
 # packages/runtime-core
 
-Placeholder package boundary for the LaurelinOS local-first MVP.
+Package boundary for future runtime state, config, permissions, source registry, approval gates, and audit records.
 
-The zero-dependency v0 implementation currently lives in `bin/` and `lib/` so the tool is runnable immediately. Move code into this package when the TypeScript monorepo is introduced.
+Current v0 runtime helpers live in `lib/` so the local CLI works immediately. Future work should preserve these rules:
+
+- runtime owns state;
+- models do not own state;
+- source paths are registered before indexing;
+- indexing and external writes require explicit approval;
+- local demo commands must not require GBrain, cloud infrastructure, or hosted services.

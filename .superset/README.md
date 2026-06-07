@@ -1,6 +1,6 @@
 # Superset Workspace Notes
 
-Open this Git repo in Superset after the initial commit is pushed.
+Open this Git repo in Superset after `main` has the local-first scaffold.
 
 Canonical repo:
 
@@ -10,20 +10,27 @@ https://github.com/Finberg-Laurelin-CEO/laurelinos
 
 Create one workspace per task/branch. Use the prompts in `prompts/`.
 
-Recommended first workspace:
+Landed baseline:
 
 ```text
-feat/cli-doctor-init
+plan/build-orchestration
+feat/cli-core
 ```
 
-Then:
+Recommended active workspaces:
 
 ```text
 feat/demo-workflows
 feat/gbrain-adapter
 feat/mcp-server
-docs/pricing-stripe
-docs/laurelinos-dev
+docs/local-build
 ```
 
-Review and merge one branch at a time.
+Later, after local MVP value is proven:
+
+```text
+docs/stripe-provisioning-plan
+apps/docs-site / laurelinos.dev
+```
+
+Review and merge one branch at a time. Do not deploy or create cloud resources for v0.

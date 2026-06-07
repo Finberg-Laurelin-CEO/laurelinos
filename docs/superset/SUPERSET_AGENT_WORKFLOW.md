@@ -15,15 +15,33 @@ one bounded task
     -> merge into main
 ```
 
-## First branches
+## Current branch map
+
+Already landed on `main`:
 
 ```text
-feat/cli-doctor-init
+plan/build-orchestration
+docs/planning/BUILD_ORCHESTRATION_PLAN.md only
+
+feat/cli-core
+local-first CLI scaffold, tests, demo data, docs, prompts, packages, MCP stub
+```
+
+Active next branches:
+
+```text
 feat/demo-workflows
 feat/gbrain-adapter
 feat/mcp-server
-docs/laurelinos-dev
-docs/pricing-stripe
+docs/local-build
+```
+
+Later branches, after the local MVP proves value:
+
+```text
+docs/stripe-provisioning-plan
+apps/docs-site / laurelinos.dev
+hosted onboarding/provisioning experiments
 ```
 
 ## Main branch rule
@@ -35,11 +53,13 @@ npm test
 npm run check
 ```
 
+No branch should require GCP, a VPS, Stripe, remote MCP, public ports, or real private data for v0 acceptance.
+
 ## Agent task boundaries
 
 ### CLI agent
 
-Allowed files:
+The initial CLI core already landed from `feat/cli-core`. Future CLI hardening should stay within:
 
 ```text
 bin/**
@@ -55,6 +75,8 @@ docs/BUILD_LOG.md
 Allowed files:
 
 ```text
+lib/demo.mjs
+lib/format.mjs
 packages/workflows/**
 examples/demo-data/**
 skills/**
@@ -68,7 +90,9 @@ Allowed files:
 
 ```text
 packages/gbrain-adapter/**
-docs/architecture/**
+packages/runtime-core/**
+docs/architecture/GBRAIN_INTEGRATION.md
+tests/**
 docs/BUILD_LOG.md
 ```
 
@@ -77,21 +101,28 @@ docs/BUILD_LOG.md
 Allowed files:
 
 ```text
-packages/mcp-server/**
+bin/**
 lib/**
+packages/mcp-server/**
+packages/runtime-core/**
+packages/workflows/**
+docs/architecture/MCP_INTEGRATION.md
 tests/**
 docs/BUILD_LOG.md
 ```
 
-### Docs/site agent
+### Local docs agent
 
 Allowed files:
 
 ```text
-apps/docs-site/**
-docs/deployment/**
-docs/compliance/**
 README.md
+docs/**
+packages/**/README.md
+apps/docs-site/README.md
+prompts/**
+.superset/**
+docs/BUILD_LOG.md
 ```
 
-The docs/site agent must not build the product before the CLI is usable.
+The docs agent must not build the product, deploy, add cloud resources, or create the public website.

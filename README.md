@@ -17,7 +17,7 @@ This repository is the public OS layer for LaurelinOS:
 - a local CLI;
 - a runtime core;
 - a company-brain adapter boundary;
-- an MCP server boundary for agents;
+- a local stdio MCP server boundary for agents;
 - synthetic demo workflows;
 - agent build instructions;
 - later documentation for `laurelinos.dev`.
@@ -41,22 +41,51 @@ Approved local sources
     -> write-back to approved Markdown later
 ```
 
-## Quick start
+## Current local MVP status
 
-This scaffold has a zero-dependency Node CLI so the first demo works before the larger TypeScript monorepo is built.
+The pushed `main` branch has a zero-dependency Node CLI scaffold that already runs locally with synthetic data only.
+
+Working now:
+
+```bash
+npm test
+npm run check
+npm run dev -- doctor
+npm run dev -- init --local
+npm run dev -- sources list
+npm run dev -- sources add demo ./examples/demo-data
+npm run dev -- brain status
+npm run dev -- brief --demo
+npm run dev -- open-loops --demo
+npm run dev -- mcp serve
+```
+
+Still branch-scoped work:
+
+- `feat/demo-workflows`: deepen synthetic brief/open-loop/meeting-prep behavior.
+- `feat/gbrain-adapter`: add the provider-neutral adapter boundary without real indexing.
+- `feat/mcp-server`: harden stdio MCP and add automated MCP tests.
+- `docs/local-build`: keep local build docs and prompts aligned with the scaffold.
+
+## Quick start
 
 ```bash
 git clone https://github.com/Finberg-Laurelin-CEO/laurelinos.git
 cd laurelinos
-
-# after copying this scaffold into the repo:
 npm install
 npm test
+npm run check
+```
+
+Try the local runtime:
+
+```bash
 npm run dev -- doctor
 npm run dev -- init --local
+npm run dev -- sources list
+npm run dev -- brain status
 npm run dev -- brief --demo
 npm run dev -- open-loops --demo
-npm run dev -- brain status
 ```
 
 To install the CLI globally from the local repo while developing:
@@ -67,7 +96,7 @@ laurelinos doctor
 laurelinos brief --demo
 ```
 
-## First commands to implement/keep working
+## First commands to keep working
 
 ```bash
 laurelinos doctor
@@ -80,7 +109,7 @@ laurelinos open-loops --demo
 laurelinos mcp serve
 ```
 
-`--demo` must use synthetic data only. Do not use real Laurelin emails, investor notes, customer notes, or private Obsidian material in the public repo.
+`--demo` must use synthetic data only. Do not use real Laurelin emails, investor notes, customer notes, private Obsidian material, customer exports, secrets, or private infrastructure details in this public repo.
 
 ## Repository structure
 
@@ -92,19 +121,28 @@ packages/                    future TypeScript package boundaries
 skills/                      human-readable workflow definitions
 prompts/                     prompts for Superset/Codex/Claude agents
 docs/                        architecture, Superset, setup, pricing, compliance drafts
-apps/docs-site/              future Vercel docs site for laurelinos.dev
+apps/docs-site/              future docs site for laurelinos.dev, not v0
 .superset/                   suggested Superset task configuration
 ```
 
 ## Build priority
 
-1. Make the local CLI useful.
+1. Keep the local CLI useful.
 2. Keep synthetic demo commands working.
 3. Add GBrain behind an adapter, not as the whole product.
-4. Expose daily brief and open-loop detection through MCP.
+4. Expose daily brief and open-loop detection through local stdio MCP.
 5. Add Claude/Codex subscription-friendly workflows through official local clients/connectors.
 6. Add Stripe and hosted provisioning only after the tool is valuable locally.
 7. Build the `laurelinos.dev` docs/subscription site after the MVP works.
+
+## Not required for v0
+
+- No GCP VM or VPS is required.
+- No hosted onboarding is required.
+- No public ports should be opened.
+- No remote MCP endpoint should be exposed.
+- No live Stripe integration should be built.
+- No public website should be built before the local runtime proves value.
 
 ## Safety baseline
 

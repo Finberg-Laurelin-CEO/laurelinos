@@ -1,12 +1,16 @@
 # Agent Task — MCP Server
 
-Build the first LaurelinOS MCP server.
+Harden the local LaurelinOS MCP server.
 
 ## Branch
 
 ```text
 feat/mcp-server
 ```
+
+## Current status on main
+
+`laurelinos mcp serve` already starts a minimal stdio JSON-RPC server with synthetic read-only tools. This branch should make that path more testable and better documented without exposing a remote endpoint.
 
 ## Scope
 
@@ -20,6 +24,7 @@ packages/runtime-core/**
 packages/workflows/**
 docs/architecture/MCP_INTEGRATION.md
 docs/BUILD_LOG.md
+tests/**
 ```
 
 ## Tools
@@ -35,6 +40,9 @@ get_open_loops
 ## Requirements
 
 - Use synthetic data by default.
+- Use local stdio transport for v0.
+- No remote MCP endpoint.
+- No public ports.
 - No external writes.
 - No secrets.
 - All tool outputs should be structured and include source IDs where available.

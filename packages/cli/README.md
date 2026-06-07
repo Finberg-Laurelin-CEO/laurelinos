@@ -1,5 +1,14 @@
 # packages/cli
 
-Placeholder package boundary for the LaurelinOS local-first MVP.
+Package boundary for the future LaurelinOS CLI package.
 
-The zero-dependency v0 implementation currently lives in `bin/` and `lib/` so the tool is runnable immediately. Move code into this package when the TypeScript monorepo is introduced.
+Current v0 code lives in:
+
+```text
+bin/laurelinos.mjs
+lib/config.mjs
+lib/demo.mjs
+lib/format.mjs
+```
+
+Keep the zero-dependency CLI runnable while this package boundary is filled in later. Do not move code here until the package split has tests and `npm run check` still passes.

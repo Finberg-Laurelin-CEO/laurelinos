@@ -14,6 +14,8 @@ It is not:
 
 It is the runtime layer that coordinates memory, context, workflows, permissions, model selection, and agent clients.
 
+For Hermes/OpenClaw-style agents, LaurelinOS should feel GBrain-like: an agent-usable company-brain substrate that can be installed/configured by agents and called over local MCP, while the external agent runtime continues to handle model calls and action execution.
+
 ## System model
 
 ```text

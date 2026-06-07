@@ -30,6 +30,8 @@ The runtime owns state. Models do not own state.
 
 Claude, Codex, GPT, Gemini, local models, Hermes, OpenClaw, Obsidian, and GBrain are not the operating system. LaurelinOS is the coordination layer that gives them shared memory, shared workflows, source-scoped permissions, and approval-gated actions.
 
+The intended relationship to Hermes/OpenClaw is similar to how an agent uses GBrain: the agent keeps doing model calls and tool execution, while LaurelinOS provides the durable company-brain substrate, source policy, approvals, audit, and founder workflows.
+
 ## MVP loop
 
 ```text

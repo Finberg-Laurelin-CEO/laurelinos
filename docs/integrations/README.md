@@ -2,6 +2,8 @@
 
 LaurelinOS should integrate with agent runtimes as a local memory, source-policy, approval, and audit layer.
 
+Think of the relationship as GBrain-like for agents: Hermes/OpenClaw/Claude/Codex keep executing; LaurelinOS becomes the durable company-brain substrate and paid FounderOS workflow layer they call.
+
 Current v0 integration target:
 
 ```bash

@@ -359,3 +359,29 @@ Security notes:
 - LaurelinOS should be configured agentically as a local MCP server inside the user's existing agent environment.
 - Existing agents make model calls through the user's accounts; LaurelinOS supplies state, source policy, approvals, audit, and workflows.
 - No secrets, provider credentials, real source indexing, external writes, hosted services, public ports, or remote MCP added.
+
+## 2026-06-07 — Agent substrate positioning
+
+Task: clarify that LaurelinOS should integrate with Hermes/OpenClaw much like an agent uses GBrain: as an agent-usable company-brain substrate, not as a competing execution runtime.
+
+Files:
+
+- `README.md`;
+- `docs/architecture/ARCHITECTURE.md`;
+- `docs/integrations/README.md`;
+- `docs/integrations/AGENTIC_INSTALL.md`;
+- `docs/BUILD_LOG.md`.
+
+Commands run:
+
+```bash
+npm test
+npm run check
+npm run demo:loom
+git diff --check
+```
+
+Security notes:
+
+- Documentation only.
+- No Hermes/OpenClaw download path, native runner, provider credential handling, real source indexing, external write, hosted service, public port, or remote MCP added.

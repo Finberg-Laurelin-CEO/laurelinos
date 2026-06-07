@@ -29,6 +29,8 @@ LaurelinOS
 
 This is the model-plug-in answer: LaurelinOS does not need to plug into every model provider directly for v1. It plugs into agents that already know how to call models.
 
+The mental model is GBrain-like for profit and workflow packaging: agents use LaurelinOS as the company-brain substrate they can query and update through safe tools, while FounderOS monetizes setup, workflows, support, entitlement, and managed operating rhythm.
+
 ## Desired user command
 
 The best user experience is a prompt to their current agent:

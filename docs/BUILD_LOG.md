@@ -300,3 +300,29 @@ Security notes:
 - `license status` works in free/demo mode without a token.
 - `license activate <token>` stores only a SHA-256 token hash and writes an audit event.
 - No raw activation token, Stripe secret, webhook code, hosted entitlement lookup, GCP/VPS resource, public port, or remote MCP added.
+
+## 2026-06-07 — Hermes and OpenClaw integration guides
+
+Task: document how Hermes and OpenClaw should consume LaurelinOS through local stdio MCP while leaving LaurelinOS as the memory, policy, approval, and audit layer.
+
+Files:
+
+- `docs/integrations/README.md`;
+- `docs/integrations/HERMES.md`;
+- `docs/integrations/OPENCLAW.md`;
+- `docs/architecture/MCP_INTEGRATION.md`;
+- `README.md`;
+- `docs/BUILD_LOG.md`.
+
+Commands run:
+
+```bash
+npm test
+npm run check
+git diff --check
+```
+
+Security notes:
+
+- Documentation only.
+- No remote MCP, public port, external write tool, real source indexing, provider credential handling, hosted service, or cloud infrastructure added.

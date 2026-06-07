@@ -4,7 +4,7 @@
 
 MCP is the local agent interface for LaurelinOS.
 
-Claude, Codex, Hermes, OpenClaw, Cursor, and future agents should be able to call LaurelinOS tools without owning the company state.
+Claude, Codex, Hermes, OpenClaw, Cursor, and future agents should be able to call LaurelinOS tools without owning the company state. Client-specific setup notes live in `docs/integrations/`.
 
 ## Current v0 server
 

@@ -128,7 +128,7 @@ examples/demo-data/          synthetic company-brain data only
 packages/                    future TypeScript package boundaries
 skills/                      human-readable workflow definitions
 prompts/                     prompts for Superset/Codex/Claude agents
-docs/                        architecture, Superset, setup, pricing, compliance drafts
+docs/                        architecture, integrations, Superset, setup, pricing, compliance drafts
 apps/docs-site/              future docs site for laurelinos.dev, not v0
 .superset/                   suggested Superset task configuration
 ```

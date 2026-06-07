@@ -1,5 +1,7 @@
 # packages/runtime-core
 
-Placeholder package boundary for the LaurelinOS local-first MVP.
+Runtime-core boundary for shared local-first policy helpers.
 
-The zero-dependency v0 implementation currently lives in `bin/` and `lib/` so the tool is runnable immediately. Move code into this package when the TypeScript monorepo is introduced.
+The first module here is `approval.mjs`, which centralises explicit approval checks for write-like operations. Adapter and workflow packages should use it before any future external write, sync, indexing, or Markdown mutation path.
+
+The v0 CLI still lives in `bin/` and `lib/` so the tool stays runnable without a build step.

@@ -60,8 +60,9 @@ Approved notes, docs, meetings, code, and synthetic demo data
 ## Initial monorepo layout
 
 ```text
-bin/                         zero-dependency CLI entry point for v0
-lib/                         small runtime helpers for the first local demo
+bin/                         CLI entry points; Python is primary for v0
+py/laurelinos_core/          stdlib-only Python runtime core
+lib/                         earlier Node helpers kept temporarily during migration
 packages/cli                 future package for terminal interface
 packages/runtime-core        session, config, permissions, workflow orchestration
 packages/gbrain-adapter      integration boundary around GBrain
@@ -80,7 +81,8 @@ scripts/                     repo bootstrap and local setup scripts
 Reports local environment status:
 
 - OS;
-- Node availability;
+- Python availability;
+- Node/npm availability for compatibility/test harness;
 - git availability;
 - GitHub CLI availability;
 - GBrain availability;
@@ -108,7 +110,11 @@ Lists configured local sources.
 
 ### `laurelinos sources add <name> <path>`
 
-Adds an approved source path to local config, but does not index the folder yet.
+Adds a candidate source path to local config, but does not index the folder yet. A separate approval command records explicit approval before future indexing can use it.
+
+### `laurelinos sources approve <name>`
+
+Marks a candidate source approved for future indexing and writes an audit event. It still does not read or index file contents.
 
 ### `laurelinos brain status`
 
@@ -128,6 +134,10 @@ Reads synthetic demo data and produces a founder brief.
 
 Reads synthetic demo data and identifies unresolved commitments.
 
+### `laurelinos prepare-meeting --demo`
+
+Reads synthetic demo data and produces source-cited meeting prep with suggested agenda, likely questions, and approval-gated follow-up posture.
+
 ### `laurelinos mcp serve`
 
 Starts a minimal MCP-compatible stdio server exposing:
@@ -136,6 +146,7 @@ Starts a minimal MCP-compatible stdio server exposing:
 get_status
 get_daily_brief
 get_open_loops
+prepare_meeting
 ```
 
 The first implementation can be minimal, but it must not perform external writes.
@@ -159,6 +170,7 @@ npm run dev -- sources list
 npm run dev -- brain status
 npm run dev -- brief --demo
 npm run dev -- open-loops --demo
+npm run dev -- prepare-meeting --demo
 ```
 
 ## Data policy

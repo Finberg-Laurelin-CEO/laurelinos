@@ -28,7 +28,7 @@ This solves the model-plug-in question: OpenClaw uses whatever model/account/too
 From this repository:
 
 ```bash
-node ./bin/laurelinos.mjs mcp serve
+python3 ./bin/laurelinos.py mcp serve
 ```
 
 After a global/local install later:
@@ -45,6 +45,7 @@ The server is local stdio only.
 get_status
 get_daily_brief
 get_open_loops
+prepare_meeting
 ```
 
 All current tools are read-only and synthetic-data-only.
@@ -60,11 +61,13 @@ User asks OpenClaw or another setup agent:
 "Install LaurelinOS into my agent environment. Do not install OpenClaw. Configure LaurelinOS as a local MCP server and verify it with the synthetic demo."
 
 Agent:
-  -> checks node/npm/git
+  -> checks python3/git and optional node/npm compatibility tooling
   -> clones or receives LaurelinOS package
   -> runs laurelinos doctor
   -> runs laurelinos init --local
   -> runs laurelinos brief --demo
+  -> runs laurelinos open-loops --demo
+  -> runs laurelinos prepare-meeting --demo
   -> writes/updates the host agent's MCP config with the LaurelinOS stdio command
   -> runs a tools/list smoke test
   -> reports exactly what changed
@@ -75,8 +78,8 @@ Use absolute paths during development:
 ```json
 {
   "name": "laurelinos",
-  "command": "node",
-  "args": ["/absolute/path/to/laurelinos/bin/laurelinos.mjs", "mcp", "serve"]
+  "command": "python3",
+  "args": ["/absolute/path/to/laurelinos/bin/laurelinos.py", "mcp", "serve"]
 }
 ```
 
@@ -92,7 +95,7 @@ Use this instruction block with OpenClaw when connecting LaurelinOS:
 LaurelinOS is the memory, source-policy, approval, and audit layer.
 
 Rules:
-- Use LaurelinOS MCP tools for daily brief and open-loop context.
+- Use LaurelinOS MCP tools for daily brief, open-loop, and meeting-prep context.
 - Preserve source IDs in any plan, summary, draft, or follow-up proposal.
 - Treat every external mutation as blocked until the user grants explicit approval.
 - Do not index or read unrelated paths.
@@ -109,13 +112,13 @@ printf '%s\n' \
   '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}' \
   '{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}' \
   '{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"get_daily_brief","arguments":{}}}' \
-  | node ./bin/laurelinos.mjs mcp serve
+  | python3 ./bin/laurelinos.py mcp serve
 ```
 
 Expected result:
 
 - initialize returns server metadata;
-- tools/list includes `get_status`, `get_daily_brief`, and `get_open_loops`;
+- tools/list includes `get_status`, `get_daily_brief`, `get_open_loops`, and `prepare_meeting`;
 - get_daily_brief returns synthetic founder context, open commitments, meeting prep, source IDs, and approval flags.
 
 ## Future tools for OpenClaw
@@ -125,7 +128,6 @@ Add these only after approval and audit semantics are tested locally:
 ```text
 list_sources
 get_source_policy
-prepare_meeting
 propose_followup
 request_action_approval
 record_action_result

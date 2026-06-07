@@ -51,7 +51,7 @@ Approved local sources
 
 ## Current local MVP status
 
-The pushed `main` branch has a zero-dependency Node CLI scaffold that already runs locally with synthetic data only.
+The active MVP runtime is now a stdlib-only Python CLI/MCP core, with the earlier Node implementation kept temporarily as a compatibility reference during migration. It runs locally with synthetic data only.
 
 Working now:
 
@@ -72,6 +72,7 @@ npm run dev -- setup verify --json
 npm run dev -- brain status
 npm run dev -- brief --demo
 npm run dev -- open-loops --demo
+npm run dev -- prepare-meeting --demo
 npm run dev -- mcp serve
 ```
 
@@ -101,6 +102,7 @@ npm run dev -- sources list
 npm run dev -- brain status
 npm run dev -- brief --demo
 npm run dev -- open-loops --demo
+npm run dev -- prepare-meeting --demo
 ```
 
 To install the CLI globally from the local repo while developing:
@@ -127,6 +129,7 @@ laurelinos setup verify
 laurelinos brain status
 laurelinos brief --demo
 laurelinos open-loops --demo
+laurelinos prepare-meeting --demo
 laurelinos mcp serve
 ```
 
@@ -135,10 +138,11 @@ laurelinos mcp serve
 ## Repository structure
 
 ```text
-bin/                         zero-dependency CLI entry point
-lib/                         small runtime helpers for the first local demo
+bin/                         CLI entry points; Python is primary, Node is temporary compatibility
+py/laurelinos_core/          stdlib-only Python runtime core
+lib/                         earlier Node helpers kept temporarily during migration
 examples/demo-data/          synthetic company-brain data only
-packages/                    future TypeScript package boundaries
+packages/                    future package boundaries
 skills/                      human-readable workflow definitions
 prompts/                     prompts for Superset/Codex/Claude agents
 docs/                        architecture, integrations, Superset, setup, pricing, compliance drafts
@@ -148,18 +152,19 @@ apps/docs-site/              future docs site for laurelinos.dev, not v0
 
 ## Stack rationale
 
-The MVP is plain JavaScript/Node because this phase needs a zero-dependency local CLI and MCP stdio runtime that agents can install/configure easily. See `docs/architecture/STACK_RATIONALE.md`.
+The MVP is moving to a stdlib-only Python runtime because it is better suited for a local company-brain/agent substrate than plain JavaScript, while still being easy for agents to install and run. Rust remains a later option for single-binary packaging or performance-critical indexing. See `docs/architecture/STACK_RATIONALE.md`.
 
 ## Build priority
 
 1. Keep the local CLI useful.
 2. Keep synthetic demo commands working.
-3. Add GBrain behind an adapter, not as the whole product.
-4. Expose daily brief and open-loop detection through local stdio MCP.
-5. Make setup agent-readable so Claude/Codex/Hermes/OpenClaw-style environments can configure LaurelinOS without manual MCP guesswork.
-6. Add Claude/Codex subscription-friendly workflows through official local clients/connectors.
-7. Add Stripe and hosted provisioning only after the tool is valuable locally.
-7. Build the `laurelinos.dev` docs/subscription site after the MVP works.
+3. Keep moving active runtime code from JavaScript into Python.
+4. Add GBrain behind an adapter, not as the whole product.
+5. Expose daily brief, open-loop detection, and meeting prep through local stdio MCP.
+6. Make setup agent-readable so Claude/Codex/Hermes/OpenClaw-style environments can configure LaurelinOS without manual MCP guesswork.
+7. Add Claude/Codex subscription-friendly workflows through official local clients/connectors.
+8. Add Stripe and hosted provisioning only after the tool is valuable locally.
+9. Build the `laurelinos.dev` docs/subscription site after the MVP works.
 
 ## Not required for v0
 

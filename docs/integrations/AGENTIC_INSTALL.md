@@ -36,13 +36,13 @@ The mental model is GBrain-like for profit and workflow packaging: agents use La
 LaurelinOS now emits machine-readable setup plans for installer agents:
 
 ```bash
-node ./bin/laurelinos.mjs setup agent generic --json
-node ./bin/laurelinos.mjs setup agent claude --json
-node ./bin/laurelinos.mjs setup agent codex --json
-node ./bin/laurelinos.mjs setup agent cursor --json
-node ./bin/laurelinos.mjs setup agent hermes --json
-node ./bin/laurelinos.mjs setup agent openclaw --json
-node ./bin/laurelinos.mjs setup verify --json
+python3 ./bin/laurelinos.py setup agent generic --json
+python3 ./bin/laurelinos.py setup agent claude --json
+python3 ./bin/laurelinos.py setup agent codex --json
+python3 ./bin/laurelinos.py setup agent cursor --json
+python3 ./bin/laurelinos.py setup agent hermes --json
+python3 ./bin/laurelinos.py setup agent openclaw --json
+python3 ./bin/laurelinos.py setup verify --json
 ```
 
 These commands generate the local MCP server spec, setup commands, smoke test, agent prompt, and safety constraints without mutating host-agent config files.
@@ -68,9 +68,9 @@ Constraints:
 The install agent should:
 
 1. Detect platform and required tools:
-   - Node.js 20+;
-   - npm;
+   - Python 3;
    - git;
+   - Node.js/npm only for current compatibility tests or npm-based local linking;
    - current agent runtime if discoverable.
 2. Install or locate LaurelinOS:
    - clone private/source-available repo for pilots; or
@@ -78,11 +78,12 @@ The install agent should:
 3. Run local checks:
 
 ```bash
-node ./bin/laurelinos.mjs doctor
-node ./bin/laurelinos.mjs init --local
-node ./bin/laurelinos.mjs license status
-node ./bin/laurelinos.mjs brief --demo
-node ./bin/laurelinos.mjs open-loops --demo
+python3 ./bin/laurelinos.py doctor
+python3 ./bin/laurelinos.py init --local
+python3 ./bin/laurelinos.py license status
+python3 ./bin/laurelinos.py brief --demo
+python3 ./bin/laurelinos.py open-loops --demo
+python3 ./bin/laurelinos.py prepare-meeting --demo
 ```
 
 4. Configure MCP using the host agent's documented config format:
@@ -90,8 +91,8 @@ node ./bin/laurelinos.mjs open-loops --demo
 ```json
 {
   "name": "laurelinos",
-  "command": "node",
-  "args": ["/absolute/path/to/laurelinos/bin/laurelinos.mjs", "mcp", "serve"]
+  "command": "python3",
+  "args": ["/absolute/path/to/laurelinos/bin/laurelinos.py", "mcp", "serve"]
 }
 ```
 
@@ -101,7 +102,7 @@ node ./bin/laurelinos.mjs open-loops --demo
 printf '%s\n' \
   '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}' \
   '{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}' \
-  | node ./bin/laurelinos.mjs mcp serve
+  | python3 ./bin/laurelinos.py mcp serve
 ```
 
 6. Report:
@@ -161,7 +162,7 @@ For first paid pilots, Joseph can ask the customer's agent to run this checklist
 A setup is successful when:
 
 - the user's chosen agent can list LaurelinOS MCP tools;
-- the agent can call `get_daily_brief` or `get_open_loops`;
+- the agent can call `get_daily_brief`, `get_open_loops`, or `prepare_meeting`;
 - no third-party agent was installed by LaurelinOS;
 - no raw model credentials were handled by LaurelinOS;
 - no real source contents were read or indexed;

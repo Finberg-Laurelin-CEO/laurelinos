@@ -22,6 +22,7 @@ laurelinos sources add <name> <path>
 laurelinos brain status
 laurelinos brief --demo
 laurelinos open-loops --demo
+laurelinos prepare-meeting --demo
 laurelinos mcp serve
 ```
 
@@ -31,6 +32,7 @@ Allowed files for future CLI hardening:
 
 ```text
 bin/**
+py/laurelinos_core/**
 lib/**
 packages/cli/**
 packages/runtime-core/**

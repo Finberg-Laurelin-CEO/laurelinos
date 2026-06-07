@@ -33,7 +33,7 @@ laurelinos brief --demo
 laurelinos open-loops --demo
 ```
 
-Optional local-only addition if it fits the branch:
+Current local-only meeting-prep command:
 
 ```bash
 laurelinos prepare-meeting --demo

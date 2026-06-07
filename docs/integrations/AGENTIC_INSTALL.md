@@ -31,6 +31,22 @@ This is the model-plug-in answer: LaurelinOS does not need to plug into every mo
 
 The mental model is GBrain-like for profit and workflow packaging: agents use LaurelinOS as the company-brain substrate they can query and update through safe tools, while FounderOS monetizes setup, workflows, support, entitlement, and managed operating rhythm.
 
+## Working setup-plan commands
+
+LaurelinOS now emits machine-readable setup plans for installer agents:
+
+```bash
+node ./bin/laurelinos.mjs setup agent generic --json
+node ./bin/laurelinos.mjs setup agent claude --json
+node ./bin/laurelinos.mjs setup agent codex --json
+node ./bin/laurelinos.mjs setup agent cursor --json
+node ./bin/laurelinos.mjs setup agent hermes --json
+node ./bin/laurelinos.mjs setup agent openclaw --json
+node ./bin/laurelinos.mjs setup verify --json
+```
+
+These commands generate the local MCP server spec, setup commands, smoke test, agent prompt, and safety constraints without mutating host-agent config files.
+
 ## Desired user command
 
 The best user experience is a prompt to their current agent:

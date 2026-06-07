@@ -39,6 +39,8 @@ npm run dev -- sources show demo
 npm run dev -- sources approve demo
 npm run dev -- audit log
 npm run dev -- license status
+npm run dev -- setup agent hermes --json
+npm run dev -- setup verify --json
 npm run dev -- sources list
 npm run dev -- brain status
 npm run dev -- brief --demo
@@ -89,6 +91,18 @@ npm run dev -- license status
 ```
 
 The raw activation token is not stored or echoed. The current implementation is local-only and does not contact Stripe or a hosted entitlement service.
+
+## Agentic setup plan
+
+Use this to produce a machine-readable MCP setup plan for an existing agent runtime:
+
+```bash
+npm run dev -- setup agent openclaw --json
+npm run dev -- setup agent hermes --json
+npm run dev -- setup verify --json
+```
+
+The setup plan tells an installer agent which local stdio MCP command to configure, which demo commands to run, and which safety constraints to preserve. It does not install Hermes/OpenClaw, store model credentials, expose remote MCP, or read real source folders.
 
 ## Install local command
 

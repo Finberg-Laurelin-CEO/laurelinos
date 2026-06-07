@@ -23,6 +23,11 @@ echo "## license status"
 node "$CLI" license status
 
 echo
+echo "## agentic setup plan"
+node "$CLI" setup agent openclaw --json
+node "$CLI" setup verify --json
+
+echo
 echo "## init --local and source approval audit"
 (
   cd "$DEMO_WORKSPACE"

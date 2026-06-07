@@ -147,6 +147,30 @@ test('sources approve records explicit approval and audit events without indexin
   assert.equal(shownEvent.id, source.approvalEventId);
 });
 
+test('setup agent emits a safe machine-readable plan for existing agent runtimes', () => {
+  const output = run(['setup', 'agent', 'openclaw', '--json']);
+  const parsed = JSON.parse(output);
+  assert.equal(parsed.target, 'openclaw');
+  assert.equal(parsed.mcpServer.name, 'laurelinos');
+  assert.equal(parsed.mcpServer.transport, 'stdio');
+  assert.equal(parsed.mcpServer.command, 'node');
+  assert.deepEqual(parsed.mcpServer.args.slice(-2), ['mcp', 'serve']);
+  assert.ok(parsed.agentPrompt.includes('Do not install Hermes or OpenClaw'));
+  assert.ok(parsed.modelStrategy.includes('existing agent runtime owns model calls'));
+  assert.ok(parsed.safetyConstraints.some((constraint) => constraint.includes('Do not ask for or store raw model-provider credentials')));
+  assert.ok(parsed.safetyConstraints.some((constraint) => constraint.includes('Do not expose LaurelinOS MCP over a public port')));
+});
+
+test('setup verify reports local readiness without touching third-party agents', () => {
+  const output = run(['setup', 'verify', '--json']);
+  const parsed = JSON.parse(output);
+  assert.equal(parsed.product, 'LaurelinOS');
+  assert.equal(parsed.ready, true);
+  assert.equal(parsed.mcpServer.name, 'laurelinos');
+  assert.equal(parsed.safeToProceedWithSyntheticDemo, true);
+  assert.match(parsed.reminder, /does not install third-party agents/);
+});
+
 test('license status starts in demo mode and activation stores only a token hash', () => {
   const tmp = makeTempWorkspace();
   const initialStatus = JSON.parse(run(['license', 'status'], { cwd: tmp }));

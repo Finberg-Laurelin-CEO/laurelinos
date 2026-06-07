@@ -67,6 +67,8 @@ npm run dev -- sources show demo
 npm run dev -- sources approve demo
 npm run dev -- audit log
 npm run dev -- license status
+npm run dev -- setup agent openclaw --json
+npm run dev -- setup verify --json
 npm run dev -- brain status
 npm run dev -- brief --demo
 npm run dev -- open-loops --demo
@@ -120,6 +122,8 @@ laurelinos sources show <name>
 laurelinos sources approve <name>
 laurelinos audit log
 laurelinos license status
+laurelinos setup agent <generic|claude|codex|cursor|hermes|openclaw>
+laurelinos setup verify
 laurelinos brain status
 laurelinos brief --demo
 laurelinos open-loops --demo
@@ -152,8 +156,9 @@ The MVP is plain JavaScript/Node because this phase needs a zero-dependency loca
 2. Keep synthetic demo commands working.
 3. Add GBrain behind an adapter, not as the whole product.
 4. Expose daily brief and open-loop detection through local stdio MCP.
-5. Add Claude/Codex subscription-friendly workflows through official local clients/connectors.
-6. Add Stripe and hosted provisioning only after the tool is valuable locally.
+5. Make setup agent-readable so Claude/Codex/Hermes/OpenClaw-style environments can configure LaurelinOS without manual MCP guesswork.
+6. Add Claude/Codex subscription-friendly workflows through official local clients/connectors.
+7. Add Stripe and hosted provisioning only after the tool is valuable locally.
 7. Build the `laurelinos.dev` docs/subscription site after the MVP works.
 
 ## Not required for v0

@@ -414,3 +414,34 @@ Security/legal notes:
 - License text now more explicitly restricts commercial use, production use, redistribution, public forks/mirrors, hosted demos, competitive use, remote services, and AI/ML training or dataset use.
 - `package.json` remains `private` and `UNLICENSED`, with a blocking `prepublishOnly` script to reduce accidental publication.
 - This is protective drafting, not a substitute for attorney review.
+
+## 2026-06-07 — Agentic setup MVP commands
+
+Task: add concrete CLI setup commands that let an installer agent configure LaurelinOS as a local MCP company-brain substrate for existing agent runtimes.
+
+Files:
+
+- `bin/laurelinos.mjs`;
+- `lib/setup.mjs`;
+- `tests/cli.test.mjs`;
+- `README.md`;
+- `docs/LOCAL_BUILD_INSTRUCTIONS.md`;
+- `docs/integrations/AGENTIC_INSTALL.md`;
+- `docs/demo/LOOM_DEMO_SCRIPT.md`;
+- `scripts/loom-demo-smoke.sh`;
+- `docs/BUILD_LOG.md`.
+
+Commands run:
+
+```bash
+npm test
+npm run check
+npm run demo:loom
+git diff --check
+```
+
+Security notes:
+
+- `setup agent <target> --json` emits setup instructions and MCP config only; it does not mutate host-agent files.
+- `setup verify --json` verifies local readiness only.
+- No Hermes/OpenClaw install, provider credential handling, real source indexing, external writes, hosted services, public ports, or remote MCP added.

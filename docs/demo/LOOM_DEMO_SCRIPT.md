@@ -40,6 +40,7 @@ For recording, you can either run the script end-to-end or run the commands manu
 clear
 node ./bin/laurelinos.mjs doctor
 node ./bin/laurelinos.mjs license status
+node ./bin/laurelinos.mjs setup agent openclaw --json
 node ./bin/laurelinos.mjs brief --demo
 node ./bin/laurelinos.mjs open-loops --demo
 printf '%s\n' \
@@ -141,6 +142,7 @@ Point out:
 Show:
 
 ```bash
+node ./bin/laurelinos.mjs setup agent openclaw --json
 printf '%s\n' \
   '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}' \
   '{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}' \
@@ -150,7 +152,7 @@ printf '%s\n' \
 Say:
 
 ```text
-Any MCP-aware agent can call this locally. Hermes or OpenClaw can do the agent work. LaurelinOS supplies the state, source policy, approvals, and audit trail.
+Any MCP-aware agent can call this locally. Hermes or OpenClaw can do the model and action work through the user's existing setup. LaurelinOS supplies the state, source policy, approvals, and audit trail.
 ```
 
 ### 1:25 to 1:30 — call to action

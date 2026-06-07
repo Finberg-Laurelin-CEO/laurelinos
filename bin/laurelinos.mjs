@@ -15,12 +15,13 @@ import { buildDailyBrief, detectOpenLoops, loadDemoBrain } from '../lib/demo.mjs
 import { printBrief, printJson, printOpenLoops } from '../lib/format.mjs';
 import { activateLocalLicense, readLicenseStatus } from '../lib/license.mjs';
 import { handleMcpLine } from '../lib/mcp.mjs';
+import { buildAgentSetupPlan, verifyAgenticSetup } from '../lib/setup.mjs';
 
 const repoRoot = path.resolve(new URL(import.meta.url).pathname, '..', '..');
 const args = process.argv.slice(2);
 
 function usage(exitCode = 0) {
-  console.log(`LaurelinOS local-first runtime\n\nUsage:\n  laurelinos doctor\n  laurelinos init --local\n  laurelinos sources list\n  laurelinos sources add <name> <path>\n  laurelinos sources show <name>\n  laurelinos sources approve <name>\n  laurelinos audit log\n  laurelinos audit show <id>\n  laurelinos license status\n  laurelinos license activate <token>\n  laurelinos brain status\n  laurelinos brief --demo [--json]\n  laurelinos open-loops --demo [--json]\n  laurelinos mcp serve\n`);
+  console.log(`LaurelinOS local-first runtime\n\nUsage:\n  laurelinos doctor\n  laurelinos init --local\n  laurelinos sources list\n  laurelinos sources add <name> <path>\n  laurelinos sources show <name>\n  laurelinos sources approve <name>\n  laurelinos audit log\n  laurelinos audit show <id>\n  laurelinos license status\n  laurelinos license activate <token>\n  laurelinos setup agent <generic|claude|codex|cursor|hermes|openclaw> [--json]\n  laurelinos setup verify [--json]\n  laurelinos brain status\n  laurelinos brief --demo [--json]\n  laurelinos open-loops --demo [--json]\n  laurelinos mcp serve\n`);
   process.exit(exitCode);
 }
 
@@ -238,6 +239,57 @@ function runLicense() {
   usage(1);
 }
 
+function printSetupPlan(plan) {
+  console.log(`# LaurelinOS agentic setup plan: ${plan.targetLabel}`);
+  console.log('');
+  console.log(plan.purpose);
+  console.log('');
+  console.log('## MCP server');
+  console.log(`- Name: ${plan.mcpServer.name}`);
+  console.log(`- Transport: ${plan.mcpServer.transport}`);
+  console.log(`- Command: ${plan.mcpServer.command}`);
+  console.log(`- Args: ${plan.mcpServer.args.join(' ')}`);
+  console.log('');
+  console.log('## Agent prompt');
+  console.log(plan.agentPrompt);
+  console.log('');
+  console.log('## Safety constraints');
+  for (const constraint of plan.safetyConstraints) console.log(`- ${constraint}`);
+  console.log('');
+  console.log('## Smoke test');
+  console.log(plan.smokeTest.command);
+}
+
+function runSetup() {
+  const sub = args[1];
+  if (sub === 'agent') {
+    const target = args[2] ?? 'generic';
+    try {
+      const plan = buildAgentSetupPlan(target, repoRoot);
+      if (hasFlag('--json')) printJson(plan);
+      else printSetupPlan(plan);
+    } catch (error) {
+      console.error(error instanceof Error ? error.message : String(error));
+      process.exit(1);
+    }
+    return;
+  }
+  if (sub === 'verify') {
+    const result = verifyAgenticSetup(repoRoot);
+    if (hasFlag('--json')) printJson(result);
+    else {
+      console.log('# LaurelinOS agentic setup verification');
+      console.log(`Ready: ${result.ready ? 'yes' : 'no'}`);
+      console.log(`CLI path: ${result.cliPath}`);
+      console.log(`Node: ${result.nodeVersion}`);
+      for (const check of result.checks) console.log(`- ${check.name}: ${check.ok ? 'ok' : 'failed'} (${check.detail})`);
+      console.log(result.reminder);
+    }
+    return;
+  }
+  usage(1);
+}
+
 function runBrain() {
   const sub = args[1];
   if (sub !== 'status') usage(1);
@@ -320,6 +372,9 @@ switch (command) {
     break;
   case 'license':
     runLicense();
+    break;
+  case 'setup':
+    runSetup();
     break;
   case 'brain':
     runBrain();

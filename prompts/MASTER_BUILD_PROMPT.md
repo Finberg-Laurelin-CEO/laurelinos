@@ -50,7 +50,11 @@ npm run dev -- doctor
 npm run dev -- init --local
 npm run dev -- sources list
 npm run dev -- sources add demo ./examples/demo-data
+npm run dev -- sources approve demo
+npm run dev -- sources scan demo --json
+npm run dev -- sources index demo --json
 npm run dev -- brain status
+npm run dev -- brain search "Northstar" --json
 npm run dev -- brief --demo
 npm run dev -- open-loops --demo
 npm run dev -- prepare-meeting --demo
@@ -93,10 +97,11 @@ Build in this order:
 4. Improve `open-loops --demo`.
 5. Keep meeting-prep demo behavior synthetic, local, source-cited, and exposed through CLI/MCP.
 6. Continue moving active runtime behavior from JavaScript to Python.
-7. Create GBrain adapter interface with stub implementation.
-8. Improve MCP server exposing `get_status`, `get_daily_brief`, `get_open_loops`, and `prepare_meeting`.
-9. Add local integration docs.
-10. Only later: docs site, Stripe provisioning, hosted onboarding, and cloud infrastructure.
+7. Build approved-source local memory: scan, index, search, show, feedback.
+8. Create GBrain adapter interface with stub implementation.
+9. Improve MCP server exposing source policy, memory search/source, feedback, brief, open loops, and meeting prep.
+10. Add local integration docs.
+11. Only later: docs site, Stripe provisioning, hosted onboarding, and cloud infrastructure.
 
 Do not build the website first.
 

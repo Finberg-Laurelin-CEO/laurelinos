@@ -62,9 +62,9 @@ logs/
 state/
 ```
 
-Source commands must record candidate paths without indexing folder contents.
+Source add/approve commands must record candidate paths and explicit approval before any indexing. Source scan/index may read only approved sources and must skip hidden paths, unsupported files, large files, and likely secrets.
 
-Do not store secrets. Do not index private folders. Do not require GBrain, cloud infrastructure, or hosted services for local demo commands.
+Do not store secrets. Do not index private folders without approval. Do not require GBrain, cloud infrastructure, or hosted services for local demo commands.
 
 ## Acceptance
 

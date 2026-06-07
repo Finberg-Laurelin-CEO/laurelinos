@@ -4,6 +4,7 @@ import hashlib
 import json
 import os
 import platform
+import re
 import shutil
 import socket
 import subprocess
@@ -25,6 +26,15 @@ TARGET_LABELS = {
     "openclaw": "OpenClaw",
 }
 LICENSE_FEATURES = ["founder-brief", "open-loops", "meeting-prep", "mcp"]
+INDEXABLE_EXTENSIONS = {".md", ".markdown", ".txt", ".json", ".csv"}
+SKIPPED_DIR_NAMES = {".git", ".hg", ".svn", ".laurelinos", "node_modules", "__pycache__", ".venv", "venv"}
+MAX_INDEX_FILE_BYTES = 512_000
+SECRET_PATTERNS = [
+    re.compile(r"-----BEGIN (?:RSA|OPENSSH|EC|PGP) PRIVATE KEY-----"),
+    re.compile(r"AKIA[0-9A-Z]{16}"),
+    re.compile(r"(?:sk-|ghp_|whsec_)[A-Za-z0-9_\-]{20,}"),
+    re.compile(r"(?:OPENAI_API_KEY|ANTHROPIC_API_KEY|STRIPE_SECRET_KEY)\s*=\s*[^\s]+", re.IGNORECASE),
+]
 
 
 def utc_now() -> str:
@@ -117,6 +127,329 @@ def read_audit_events(cwd: Path | None = None) -> list[dict[str, Any]]:
     if not content:
         return []
     return [json.loads(line) for line in content.splitlines()]
+
+
+def memory_index_path(cwd: Path | None = None) -> Path:
+    paths = ensure_local_config(cwd)
+    return Path(paths["configDir"]) / "state" / "memory-index.json"
+
+
+def feedback_path(cwd: Path | None = None) -> Path:
+    paths = ensure_local_config(cwd)
+    return Path(paths["configDir"]) / "state" / "feedback.jsonl"
+
+
+def read_memory_index(cwd: Path | None = None) -> dict[str, Any]:
+    path = memory_index_path(cwd)
+    if not path.exists():
+        return {"version": 1, "indexedAt": None, "documents": []}
+    return json.loads(path.read_text())
+
+
+def write_memory_index(index: dict[str, Any], cwd: Path | None = None) -> None:
+    path = memory_index_path(cwd)
+    path.write_text(json.dumps(index, indent=2) + "\n")
+
+
+def require_approved_source(name: str, cwd: Path | None = None) -> dict[str, Any]:
+    source = find_source_record(name, cwd)
+    if not source.get("approvedForIndexing"):
+        raise ValueError(f"Source is not approved for indexing: {name}")
+    return source
+
+
+def find_source_record(name: str, cwd: Path | None = None) -> dict[str, Any]:
+    data = read_sources(cwd)
+    for source in data["sources"]:
+        if source["name"] == name:
+            return source
+    raise ValueError(f"Unknown source: {name}")
+
+
+def is_hidden_path(path: Path, root: Path) -> bool:
+    try:
+        rel_parts = path.relative_to(root).parts
+    except ValueError:
+        return True
+    return any(part.startswith(".") for part in rel_parts)
+
+
+def looks_like_secret(text: str) -> bool:
+    return any(pattern.search(text) for pattern in SECRET_PATTERNS)
+
+
+def source_document_id(source_name: str, relative_path: str) -> str:
+    digest = hashlib.sha256(f"{source_name}:{relative_path}".encode("utf-8")).hexdigest()[:16]
+    return f"src_{digest}"
+
+
+def title_from_content(path: Path, content: str) -> str:
+    if path.suffix.lower() == ".json":
+        try:
+            parsed = json.loads(content)
+            if isinstance(parsed, dict):
+                for key in ["title", "name", "generated_for", "description"]:
+                    value = parsed.get(key)
+                    if isinstance(value, str) and value.strip():
+                        return value.strip()[:120]
+        except Exception:
+            pass
+    for line in content.splitlines():
+        stripped = line.strip()
+        if not stripped:
+            continue
+        if stripped.startswith("#"):
+            stripped = stripped.lstrip("#").strip()
+        return stripped[:120]
+    return path.stem.replace("-", " ").replace("_", " ").strip() or path.name
+
+
+def scan_approved_source(name: str, cwd: Path | None = None) -> dict[str, Any]:
+    source = require_approved_source(name, cwd)
+    root = Path(source["path"]).expanduser().resolve()
+    if not root.exists():
+        raise ValueError(f"Approved source path no longer exists: {root}")
+
+    files: list[dict[str, Any]] = []
+    skipped: list[dict[str, Any]] = []
+    for current_root, dir_names, file_names in os.walk(root):
+        current = Path(current_root)
+        dir_names[:] = [directory for directory in dir_names if directory not in SKIPPED_DIR_NAMES and not directory.startswith(".")]
+        for file_name in sorted(file_names):
+            path = current / file_name
+            relative_path = str(path.relative_to(root))
+            reason = None
+            if file_name.startswith(".") or is_hidden_path(path, root):
+                reason = "hidden_path"
+            elif path.suffix.lower() not in INDEXABLE_EXTENSIONS:
+                reason = "unsupported_extension"
+            else:
+                size = path.stat().st_size
+                if size > MAX_INDEX_FILE_BYTES:
+                    reason = "too_large"
+            if reason:
+                skipped.append({"path": relative_path, "reason": reason})
+                continue
+            files.append({"path": relative_path, "extension": path.suffix.lower(), "sizeBytes": path.stat().st_size})
+
+    return {
+        "sourceName": name,
+        "sourcePath": str(root),
+        "approvedForIndexing": True,
+        "dryRun": True,
+        "eligibleFileCount": len(files),
+        "skippedFileCount": len(skipped),
+        "eligibleFiles": files,
+        "skippedFiles": skipped[:100],
+        "supportedExtensions": sorted(INDEXABLE_EXTENSIONS),
+        "notes": [
+            "Scan considered only explicitly approved sources.",
+            "Indexing supports text-like files first: Markdown, text, JSON, and CSV.",
+            "Hidden paths, unsupported extensions, large files, and likely secrets are skipped.",
+        ],
+    }
+
+
+def index_approved_source(name: str, cwd: Path | None = None) -> dict[str, Any]:
+    source = require_approved_source(name, cwd)
+    root = Path(source["path"]).expanduser().resolve()
+    scan = scan_approved_source(name, cwd)
+    existing = read_memory_index(cwd)
+    other_docs = [doc for doc in existing.get("documents", []) if doc.get("sourceName") != name]
+    documents: list[dict[str, Any]] = []
+    skipped_secret_paths: list[str] = []
+
+    for item in scan["eligibleFiles"]:
+        path = root / item["path"]
+        try:
+            content = path.read_text(encoding="utf-8")
+        except UnicodeDecodeError:
+            scan["skippedFiles"].append({"path": item["path"], "reason": "decode_error"})
+            continue
+        if looks_like_secret(content):
+            skipped_secret_paths.append(item["path"])
+            continue
+        relative_path = item["path"]
+        documents.append({
+            "id": source_document_id(name, relative_path),
+            "sourceName": name,
+            "sourcePath": str(root),
+            "relativePath": relative_path,
+            "absolutePath": str(path.resolve()),
+            "title": title_from_content(path, content),
+            "extension": path.suffix.lower(),
+            "sizeBytes": item["sizeBytes"],
+            "sha256": hashlib.sha256(content.encode("utf-8")).hexdigest(),
+            "indexedAt": utc_now(),
+            "content": content,
+        })
+
+    index = {
+        "version": 1,
+        "indexedAt": utc_now(),
+        "documents": [*other_docs, *documents],
+    }
+    write_memory_index(index, cwd)
+    event = append_audit_event("source_indexed", {
+        "sourceName": name,
+        "sourcePath": str(root),
+        "documentCount": len(documents),
+        "skippedSecretLikeFileCount": len(skipped_secret_paths),
+        "supportedExtensions": sorted(INDEXABLE_EXTENSIONS),
+    }, cwd)
+    return {
+        "sourceName": name,
+        "sourcePath": str(root),
+        "indexedDocumentCount": len(documents),
+        "totalIndexedDocumentCount": len(index["documents"]),
+        "skippedSecretLikeFiles": skipped_secret_paths,
+        "indexPath": str(memory_index_path(cwd)),
+        "auditEvent": event,
+        "documents": [{key: doc[key] for key in ["id", "sourceName", "relativePath", "title", "sha256", "sizeBytes"]} for doc in documents],
+    }
+
+
+def make_snippet(content: str, query: str, width: int = 180) -> str:
+    lower = content.casefold()
+    needle = query.casefold().strip()
+    index = lower.find(needle) if needle else -1
+    if index < 0:
+        words = re.findall(r"[A-Za-z0-9_\-]+", needle)
+        for word in words:
+            index = lower.find(word.casefold())
+            if index >= 0:
+                break
+    if index < 0:
+        return " ".join(content.split())[:width]
+    start = max(0, index - width // 2)
+    end = min(len(content), index + width // 2)
+    snippet = " ".join(content[start:end].split())
+    if start > 0:
+        snippet = "…" + snippet
+    if end < len(content):
+        snippet = snippet + "…"
+    return snippet
+
+
+def search_memory(query: str, limit: int = 10, cwd: Path | None = None) -> dict[str, Any]:
+    query = query.strip()
+    if not query:
+        raise ValueError("Search query is required.")
+    index = read_memory_index(cwd)
+    terms = [term.casefold() for term in re.findall(r"[A-Za-z0-9_\-]+", query) if len(term) >= 2]
+    results: list[dict[str, Any]] = []
+    counts = feedback_counts(cwd)
+    for doc in index.get("documents", []):
+        haystack = "\n".join([doc.get("title", ""), doc.get("relativePath", ""), doc.get("content", "")]).casefold()
+        exact = query.casefold() in haystack
+        term_hits = sum(1 for term in terms if term in haystack)
+        if not exact and term_hits == 0:
+            continue
+        score = (10 if exact else 0) + term_hits
+        results.append({
+            "id": doc["id"],
+            "sourceName": doc["sourceName"],
+            "relativePath": doc["relativePath"],
+            "title": doc["title"],
+            "score": score,
+            "snippet": make_snippet(doc.get("content", ""), query),
+            "sha256": doc["sha256"],
+            "feedbackCount": counts.get(doc["id"], 0),
+        })
+    results.sort(key=lambda item: (-item["score"], item["sourceName"], item["relativePath"]))
+    return {
+        "query": query,
+        "resultCount": min(len(results), limit),
+        "totalMatches": len(results),
+        "results": results[:limit],
+        "indexPath": str(memory_index_path(cwd)),
+        "notes": ["Search uses only the local approved-source index.", "Results include source IDs and snippets for citation."],
+    }
+
+
+def get_memory_document(document_id: str, cwd: Path | None = None) -> dict[str, Any]:
+    index = read_memory_index(cwd)
+    for doc in index.get("documents", []):
+        if doc["id"] == document_id:
+            return {
+                "id": doc["id"],
+                "sourceName": doc["sourceName"],
+                "relativePath": doc["relativePath"],
+                "title": doc["title"],
+                "sha256": doc["sha256"],
+                "indexedAt": doc["indexedAt"],
+                "content": doc.get("content", ""),
+                "feedback": feedback_for_document(doc["id"], cwd),
+            }
+    raise ValueError(f"Unknown indexed source document: {document_id}")
+
+
+def list_source_policies(cwd: Path | None = None) -> dict[str, Any]:
+    data = read_sources(cwd)
+    return {
+        "sources": [{
+            "name": source["name"],
+            "path": source["path"],
+            "approvedForIndexing": bool(source.get("approvedForIndexing")),
+            "approvalStatus": source.get("approvalStatus", "candidate"),
+            "approvalEventId": source.get("approvalEventId"),
+            "note": source.get("note"),
+        } for source in data["sources"]],
+        "policy": {
+            "indexDiscoveredPathsAutomatically": False,
+            "requiresExplicitApproval": True,
+            "supportedExtensions": sorted(INDEXABLE_EXTENSIONS),
+            "remoteMcpAllowed": False,
+        },
+    }
+
+
+def read_feedback(cwd: Path | None = None) -> list[dict[str, Any]]:
+    path = feedback_path(cwd)
+    if not path.exists():
+        return []
+    content = path.read_text().strip()
+    if not content:
+        return []
+    return [json.loads(line) for line in content.splitlines()]
+
+
+def feedback_counts(cwd: Path | None = None) -> dict[str, int]:
+    counts: dict[str, int] = {}
+    for item in read_feedback(cwd):
+        document_id = item.get("documentId")
+        if document_id:
+            counts[document_id] = counts.get(document_id, 0) + 1
+    return counts
+
+
+def record_feedback(document_id: str, note: str, label: str = "note", cwd: Path | None = None) -> dict[str, Any]:
+    document = get_memory_document(document_id, cwd)
+    note = note.strip()
+    if not note:
+        raise ValueError("Feedback note is required.")
+    record = {
+        "id": str(uuid.uuid4()),
+        "createdAt": utc_now(),
+        "documentId": document["id"],
+        "sourceName": document["sourceName"],
+        "relativePath": document["relativePath"],
+        "label": label,
+        "note": note,
+    }
+    with feedback_path(cwd).open("a", encoding="utf-8") as handle:
+        handle.write(json.dumps(record, separators=(",", ":")) + "\n")
+    event = append_audit_event("feedback_recorded", {
+        "feedbackId": record["id"],
+        "documentId": document["id"],
+        "sourceName": document["sourceName"],
+        "label": label,
+    }, cwd)
+    return {"feedback": record, "auditEvent": event, "feedbackPath": str(feedback_path(cwd))}
+
+
+def feedback_for_document(document_id: str, cwd: Path | None = None) -> list[dict[str, Any]]:
+    return [item for item in read_feedback(cwd) if item.get("documentId") == document_id]
 
 
 def command_status(command: str, version_args: list[str] | None = None) -> dict[str, Any]:
@@ -425,9 +758,9 @@ def build_agent_setup_plan(target: str, root: Path | None = None) -> dict[str, A
         "smokeTest": {
             "description": "Verify the MCP server responds over stdio with tool metadata.",
             "command": f"printf '%s\\n' '{{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"initialize\",\"params\":{{}}}}' '{{\"jsonrpc\":\"2.0\",\"id\":2,\"method\":\"tools/list\",\"params\":{{}}}}' | python3 {json.dumps(str(cli_path))} mcp serve",
-            "expectedTools": ["get_status", "get_daily_brief", "get_open_loops", "prepare_meeting"],
+            "expectedTools": ["get_status", "list_sources", "search_memory", "get_source", "list_feedback", "record_feedback", "get_daily_brief", "get_open_loops", "prepare_meeting"],
         },
-        "agentPrompt": f"Install LaurelinOS into this {TARGET_LABELS[target]} environment as a local stdio MCP server. Do not install Hermes or OpenClaw. Do not ask for model-provider credentials. Run only synthetic demo commands. Configure the LaurelinOS MCP server using the host agent's documented config format. Verify tools/list includes get_status, get_daily_brief, get_open_loops, and prepare_meeting. Do not add, approve, read, or index real source folders unless I explicitly choose a path and approve it. Report exactly what files you changed.",
+        "agentPrompt": f"Install LaurelinOS into this {TARGET_LABELS[target]} environment as a local stdio MCP server. Do not install Hermes or OpenClaw. Do not ask for model-provider credentials. Run only synthetic demo commands. Configure the LaurelinOS MCP server using the host agent's documented config format. Verify tools/list includes get_status, list_sources, search_memory, get_source, list_feedback, record_feedback, get_daily_brief, get_open_loops, and prepare_meeting. Do not add, approve, read, or index real source folders unless I explicitly choose a path and approve it. Report exactly what files you changed.",
         "safetyConstraints": [
             "Do not install, download, run, vendor, or supervise Hermes/OpenClaw from LaurelinOS.",
             "Do not ask for or store raw model-provider credentials in LaurelinOS.",
@@ -471,6 +804,11 @@ def verify_agentic_setup(root: Path | None = None) -> dict[str, Any]:
 
 MCP_TOOLS = [
     {"name": "get_status", "description": "Return local LaurelinOS runtime status.", "inputSchema": {"type": "object", "properties": {}, "additionalProperties": False}},
+    {"name": "list_sources", "description": "Return approved-source policy and configured local sources.", "inputSchema": {"type": "object", "properties": {}, "additionalProperties": False}},
+    {"name": "search_memory", "description": "Search the local approved-source memory index.", "inputSchema": {"type": "object", "properties": {"query": {"type": "string"}, "limit": {"type": "number"}}, "required": ["query"], "additionalProperties": False}},
+    {"name": "get_source", "description": "Return one indexed source document by source ID.", "inputSchema": {"type": "object", "properties": {"id": {"type": "string"}}, "required": ["id"], "additionalProperties": False}},
+    {"name": "list_feedback", "description": "Return local feedback/correction records used as self-learning signals.", "inputSchema": {"type": "object", "properties": {}, "additionalProperties": False}},
+    {"name": "record_feedback", "description": "Record approved local feedback for an indexed source document.", "inputSchema": {"type": "object", "properties": {"documentId": {"type": "string"}, "note": {"type": "string"}, "label": {"type": "string"}, "approved": {"type": "boolean"}}, "required": ["documentId", "note", "approved"], "additionalProperties": False}},
     {"name": "get_daily_brief", "description": "Return a synthetic daily founder brief.", "inputSchema": {"type": "object", "properties": {}, "additionalProperties": False}},
     {"name": "get_open_loops", "description": "Return synthetic open loops.", "inputSchema": {"type": "object", "properties": {}, "additionalProperties": False}},
     {"name": "prepare_meeting", "description": "Return synthetic meeting-prep context.", "inputSchema": {"type": "object", "properties": {"query": {"type": "string"}}, "additionalProperties": False}},
@@ -511,10 +849,38 @@ def handle_mcp_message(message: dict[str, Any], root: Path | None = None) -> dic
                 "repo": "Finberg-Laurelin-CEO/laurelinos",
                 "transport": "stdio",
                 "readOnly": True,
-                "syntheticDataOnly": True,
+                "syntheticDemoToolsAvailable": True,
+                "approvedSourceMemoryTools": True,
+                "indexedDocumentCount": len(read_memory_index().get("documents", [])),
                 "externalActionsRequireApproval": True,
                 "tools": [tool["name"] for tool in MCP_TOOLS],
             }))
+        if name == "list_sources":
+            return rpc_result(message_id, text_content(list_source_policies()))
+        if name == "search_memory":
+            try:
+                limit = int(arguments.get("limit", 10))
+                return rpc_result(message_id, text_content(search_memory(str(arguments.get("query", "")), limit=max(1, min(limit, 25)))))
+            except ValueError as exc:
+                return rpc_error(message_id, -32602, str(exc))
+        if name == "get_source":
+            try:
+                return rpc_result(message_id, text_content(get_memory_document(str(arguments.get("id", "")))))
+            except ValueError as exc:
+                return rpc_error(message_id, -32602, str(exc))
+        if name == "list_feedback":
+            return rpc_result(message_id, text_content({"feedback": read_feedback(), "feedbackPath": str(feedback_path())}))
+        if name == "record_feedback":
+            if arguments.get("approved") is not True:
+                return rpc_error(message_id, -32602, "record_feedback requires approved: true")
+            try:
+                return rpc_result(message_id, text_content(record_feedback(
+                    str(arguments.get("documentId", "")),
+                    str(arguments.get("note", "")),
+                    label=str(arguments.get("label", "note")),
+                )))
+            except ValueError as exc:
+                return rpc_error(message_id, -32602, str(exc))
         if name == "get_daily_brief":
             return rpc_result(message_id, text_content(build_daily_brief(brain)))
         if name == "get_open_loops":
@@ -546,6 +912,8 @@ Usage:
   laurelinos sources add <name> <path>
   laurelinos sources show <name>
   laurelinos sources approve <name>
+  laurelinos sources scan <name> [--json]
+  laurelinos sources index <name> [--json]
   laurelinos audit log
   laurelinos audit show <id>
   laurelinos license status
@@ -553,6 +921,10 @@ Usage:
   laurelinos setup agent <generic|claude|codex|cursor|hermes|openclaw> [--json]
   laurelinos setup verify [--json]
   laurelinos brain status
+  laurelinos brain search <query> [--json]
+  laurelinos brain show <source-id> [--json]
+  laurelinos brain feedback add <source-id> <note> [--label <label>] [--json]
+  laurelinos brain feedback list [--json]
   laurelinos brief --demo [--json]
   laurelinos open-loops --demo [--json]
   laurelinos prepare-meeting --demo [--json] [--for <query>]
@@ -703,6 +1075,44 @@ def cmd_sources(args: list[str]) -> None:
         print(f"Audit event: {event['id']}")
         print("No indexing was performed.")
         return
+    if sub == "scan":
+        if len(args) < 3:
+            print("Usage: laurelinos sources scan <name> [--json]", file=sys.stderr)
+            raise SystemExit(1)
+        try:
+            result = scan_approved_source(args[2])
+        except ValueError as exc:
+            print(str(exc), file=sys.stderr)
+            raise SystemExit(1) from exc
+        if has_flag(args, "--json"):
+            print_json(result)
+        else:
+            print(f"# Source scan — {result['sourceName']}")
+            print(f"Path: {result['sourcePath']}")
+            print(f"Eligible files: {result['eligibleFileCount']}")
+            print(f"Skipped files: {result['skippedFileCount']}")
+            print(f"Supported extensions: {', '.join(result['supportedExtensions'])}")
+            print("No files were indexed by this scan.")
+        return
+    if sub == "index":
+        if len(args) < 3:
+            print("Usage: laurelinos sources index <name> [--json]", file=sys.stderr)
+            raise SystemExit(1)
+        try:
+            result = index_approved_source(args[2])
+        except ValueError as exc:
+            print(str(exc), file=sys.stderr)
+            raise SystemExit(1) from exc
+        if has_flag(args, "--json"):
+            print_json(result)
+        else:
+            print(f"Indexed approved source: {result['sourceName']}")
+            print(f"Documents indexed: {result['indexedDocumentCount']}")
+            print(f"Index path: {result['indexPath']}")
+            print(f"Audit event: {result['auditEvent']['id']}")
+            if result["skippedSecretLikeFiles"]:
+                print(f"Skipped likely-secret files: {len(result['skippedSecretLikeFiles'])}")
+        return
     usage(1)
 
 
@@ -800,26 +1210,121 @@ def cmd_setup(args: list[str]) -> None:
 
 
 def cmd_brain(args: list[str]) -> None:
-    if len(args) < 2 or args[1] != "status":
+    if len(args) < 2:
         usage(1)
-    paths = ensure_local_config()
-    sources = read_sources()
-    demo_path = repo_root() / "examples" / "demo-data" / "demo-brain.json"
-    print_json({
-        "status": "local runtime ready",
-        "runtime": "python",
-        "configDir": paths["configDir"],
-        "sourceCount": len(sources["sources"]),
-        "approvedSourceCount": len([source for source in sources["sources"] if source.get("approvedForIndexing")]),
-        "auditLogAvailable": Path(paths["auditPath"]).exists(),
-        "gbrain": command_status("gbrain", ["--version"]),
-        "demoDataAvailable": demo_path.exists(),
-        "externalActionsRequireApproval": True,
-        "notes": [
-            "This command does not initialise or mutate GBrain.",
-            "Use synthetic demo workflows until real sources are explicitly approved.",
-        ],
-    })
+    sub = args[1]
+    if sub == "status":
+        paths = ensure_local_config()
+        sources = read_sources()
+        index = read_memory_index()
+        demo_path = repo_root() / "examples" / "demo-data" / "demo-brain.json"
+        print_json({
+            "status": "local runtime ready",
+            "runtime": "python",
+            "configDir": paths["configDir"],
+            "sourceCount": len(sources["sources"]),
+            "approvedSourceCount": len([source for source in sources["sources"] if source.get("approvedForIndexing")]),
+            "indexedDocumentCount": len(index.get("documents", [])),
+            "indexPath": str(memory_index_path()),
+            "auditLogAvailable": Path(paths["auditPath"]).exists(),
+            "gbrain": command_status("gbrain", ["--version"]),
+            "demoDataAvailable": demo_path.exists(),
+            "externalActionsRequireApproval": True,
+            "notes": [
+                "This command does not initialise or mutate GBrain.",
+                "The local memory index only reads explicitly approved sources.",
+            ],
+        })
+        return
+    if sub == "search":
+        query = " ".join(args[2:]).strip()
+        if not query:
+            print("Usage: laurelinos brain search <query> [--json]", file=sys.stderr)
+            raise SystemExit(1)
+        if "--json" in args:
+            query = " ".join(part for part in args[2:] if part != "--json").strip()
+        try:
+            result = search_memory(query)
+        except ValueError as exc:
+            print(str(exc), file=sys.stderr)
+            raise SystemExit(1) from exc
+        if has_flag(args, "--json"):
+            print_json(result)
+        else:
+            print(f"# Brain Search — {result['query']}")
+            print(f"Matches: {result['totalMatches']}")
+            for item in result["results"]:
+                print(f"- {item['id']} — {item['title']}")
+                print(f"  - Source: {item['sourceName']} / {item['relativePath']}")
+                print(f"  - Snippet: {item['snippet']}")
+        return
+    if sub == "show":
+        if len(args) < 3:
+            print("Usage: laurelinos brain show <source-id> [--json]", file=sys.stderr)
+            raise SystemExit(1)
+        try:
+            document = get_memory_document(args[2])
+        except ValueError as exc:
+            print(str(exc), file=sys.stderr)
+            raise SystemExit(1) from exc
+        if has_flag(args, "--json"):
+            print_json(document)
+        else:
+            print(f"# {document['title']}")
+            print(f"Source ID: {document['id']}")
+            print(f"Source: {document['sourceName']} / {document['relativePath']}")
+            print(f"SHA-256: {document['sha256']}")
+            print()
+            print(document["content"])
+        return
+    if sub == "feedback":
+        if len(args) < 3:
+            print("Usage: laurelinos brain feedback <add|list> ...", file=sys.stderr)
+            raise SystemExit(1)
+        feedback_sub = args[2]
+        if feedback_sub == "list":
+            feedback = read_feedback()
+            if has_flag(args, "--json"):
+                print_json({"feedback": feedback, "feedbackPath": str(feedback_path())})
+            else:
+                print("# Brain Feedback")
+                if not feedback:
+                    print("No feedback recorded.")
+                for item in feedback:
+                    print(f"- {item['id']} [{item['label']}] {item['documentId']}")
+                    print(f"  - {item['note']}")
+            return
+        if feedback_sub == "add":
+            if len(args) < 5:
+                print("Usage: laurelinos brain feedback add <source-id> <note> [--label <label>] [--json]", file=sys.stderr)
+                raise SystemExit(1)
+            document_id = args[3]
+            label = value_after(args, "--label") or "note"
+            note_parts: list[str] = []
+            skip_next = False
+            for part in args[4:]:
+                if skip_next:
+                    skip_next = False
+                    continue
+                if part in {"--json"}:
+                    continue
+                if part == "--label":
+                    skip_next = True
+                    continue
+                note_parts.append(part)
+            try:
+                result = record_feedback(document_id, " ".join(note_parts), label=label)
+            except ValueError as exc:
+                print(str(exc), file=sys.stderr)
+                raise SystemExit(1) from exc
+            if has_flag(args, "--json"):
+                print_json(result)
+            else:
+                print(f"Recorded feedback: {result['feedback']['id']}")
+                print(f"Document: {result['feedback']['documentId']}")
+                print(f"Audit event: {result['auditEvent']['id']}")
+            return
+    usage(1)
 
 
 def cmd_brief(args: list[str]) -> None:

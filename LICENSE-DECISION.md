@@ -1,35 +1,32 @@
 # Licence Decision
 
-No final open-source licence has been selected yet.
+## Current decision
 
-Because the repository is public and intended to invite users/contributors, Laurelin should choose a licence before externally promoting the repo.
+LaurelinOS is no longer MIT-licensed going forward.
 
-Reasonable options:
+The repository now uses a proprietary source-available evaluation licence in `LICENSE` and `package.json` is marked:
 
-## MIT
-
-Simple and permissive. Good for adoption.
-
-## Apache-2.0
-
-Permissive and includes an explicit patent grant. Good for infrastructure projects.
-
-## Source-available / commercial split
-
-Possible if Laurelin wants the OS layer visible while reserving some commercial rights.
-
-## Recommendation
-
-Use either:
-
-```text
-Apache-2.0 for the public OS layer
+```json
+{
+  "private": true,
+  "license": "UNLICENSED"
+}
 ```
 
-or:
+This is intended to:
 
-```text
-MIT for the public OS layer, commercial licence for hosted/managed FounderOS features
-```
+- prevent third parties from freely copying, redistributing, repackaging, hosting, or selling LaurelinOS;
+- preserve Laurelin's ability to sell FounderOS pilots, managed setup, workflow packs, and future hosted entitlement/provisioning;
+- still allow a prospect to view and run an unmodified local copy for evaluation when appropriate.
 
-Do not assume users can freely use or redistribute the project until a licence is chosen.
+## Important caveat
+
+A licence change applies going forward. It does not retroactively revoke rights that may have been validly granted for earlier versions under a previous licence.
+
+## Commercial direction
+
+Commercial use, production use, redistribution, hosted/managed services, and paid customer deployments require a separate written agreement with Laurelin.
+
+## Follow-up before major launch
+
+Have an attorney review the licence before broad external promotion, npm publication, paid pilots at scale, or enterprise sales.

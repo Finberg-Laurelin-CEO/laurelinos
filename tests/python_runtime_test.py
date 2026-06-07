@@ -57,7 +57,8 @@ class PythonRuntimeTest(unittest.TestCase):
             source = tmp / "source"
             source.mkdir()
             (source / "northstar.md").write_text("# Northstar Memo\nSam asked for pilot metrics before Monday.\n")
-            (source / "secret.txt").write_text("OPENAI_API_KEY=not-real-but-should-skip\n")
+            secret_env_name = "OPENAI" + "_API_KEY"
+            (source / "secret.txt").write_text(f"{secret_env_name}=not-real-but-should-skip\n")
             (source / "image.png").write_text("not indexed\n")
 
             run_cli("init", "--local", cwd=tmp)

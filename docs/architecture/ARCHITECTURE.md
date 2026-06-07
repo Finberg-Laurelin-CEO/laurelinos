@@ -39,6 +39,7 @@ Owns:
 - approval-gate policy;
 - provider-neutral session state later;
 - workflow orchestration;
+- local audit records for source registration and approval;
 - tool-call audit records later.
 
 ### Workflows
@@ -66,7 +67,7 @@ writePage
 sync
 ```
 
-The adapter should not silently index real folders.
+The adapter should not silently index real folders. Local source registration starts as a candidate; `sources approve <name>` records explicit approval and writes an audit event before any future indexing path can use it.
 
 ### MCP server
 

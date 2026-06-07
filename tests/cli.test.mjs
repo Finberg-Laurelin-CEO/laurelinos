@@ -117,12 +117,44 @@ test('sources add registers a local path without indexing source contents', () =
   assert.equal(listed.sources[0].name, 'demo');
 });
 
+test('sources approve records explicit approval and audit events without indexing contents', () => {
+  const tmp = makeTempWorkspace();
+  const sourceDir = path.join(tmp, 'approved-source');
+  fs.mkdirSync(sourceDir);
+  fs.writeFileSync(path.join(sourceDir, 'private.md'), 'PRIVATE_APPROVAL_TOKEN=never-indexed\n');
+
+  run(['sources', 'add', 'approved', sourceDir], { cwd: tmp });
+  const approveOutput = run(['sources', 'approve', 'approved'], { cwd: tmp });
+  assert.match(approveOutput, /Approved source for future indexing: approved/);
+  assert.match(approveOutput, /No indexing was performed/);
+
+  const source = JSON.parse(run(['sources', 'show', 'approved'], { cwd: tmp }));
+  assert.equal(source.approvedForIndexing, true);
+  assert.equal(source.approvalStatus, 'approved');
+  assert.equal(source.approvedBy, 'local-user');
+  assert.match(source.approvalEventId, /^[0-9a-f-]{36}$/);
+  assert.doesNotMatch(JSON.stringify(source), /PRIVATE_APPROVAL_TOKEN|never-indexed/);
+
+  const audit = JSON.parse(run(['audit', 'log'], { cwd: tmp }));
+  assert.equal(audit.events.length, 2);
+  assert.equal(audit.events[0].type, 'source_candidate_added');
+  assert.equal(audit.events[1].type, 'source_approved_for_indexing');
+  assert.equal(audit.events[1].details.sourceName, 'approved');
+  assert.equal(audit.events[1].details.approvedForIndexing, true);
+  assert.doesNotMatch(JSON.stringify(audit), /PRIVATE_APPROVAL_TOKEN|never-indexed/);
+
+  const shownEvent = JSON.parse(run(['audit', 'show', source.approvalEventId], { cwd: tmp }));
+  assert.equal(shownEvent.id, source.approvalEventId);
+});
+
 test('brain status reports local runtime state through synthetic-safe status', () => {
   const tmp = makeTempWorkspace();
   const output = run(['brain', 'status'], { cwd: tmp });
   const parsed = JSON.parse(output);
   assert.equal(parsed.status, 'local runtime ready');
   assert.equal(parsed.sourceCount, 0);
+  assert.equal(parsed.approvedSourceCount, 0);
+  assert.equal(parsed.auditLogAvailable, true);
   assert.equal(parsed.demoDataAvailable, true);
   assert.equal(parsed.externalActionsRequireApproval, true);
   assert.match(parsed.configDir, /\.laurelinos$/);

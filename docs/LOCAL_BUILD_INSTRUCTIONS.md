@@ -35,6 +35,9 @@ npm run dev -- doctor
 npm run dev -- init --local
 npm run dev -- sources list
 npm run dev -- sources add demo ./examples/demo-data
+npm run dev -- sources show demo
+npm run dev -- sources approve demo
+npm run dev -- audit log
 npm run dev -- sources list
 npm run dev -- brain status
 npm run dev -- brief --demo
@@ -43,22 +46,31 @@ npm run dev -- open-loops --demo
 
 All demo output is synthetic. Do not replace `examples/demo-data/` with real Laurelin, customer, investor, or private Obsidian data in the public repo.
 
-## Add a source candidate
+## Add and approve a source candidate
 
-This does not index the folder. It only records a candidate source in `.laurelinos/sources.json`.
+`sources add` does not index the folder. It only records a candidate source in `.laurelinos/sources.json` and writes an audit event in `.laurelinos/logs/audit.jsonl`.
 
 ```bash
 npm run dev -- sources add notes ./some-local-folder
-npm run dev -- sources list
+npm run dev -- sources show notes
+npm run dev -- audit log
 ```
 
 The source record is created with:
 
 ```text
 approvedForIndexing: false
+approvalStatus: candidate
 ```
 
-Indexing must be added later with an explicit approval flow. Do not point this at private folders for demos unless the user has explicitly approved the source and the data will not be committed.
+Approve the source only after the user has explicitly agreed that this path can be used by future indexing work:
+
+```bash
+npm run dev -- sources approve notes
+npm run dev -- audit log
+```
+
+Approval updates the source metadata and audit log, but still does not index or read source file contents. Do not point this at private folders for demos unless the user has explicitly approved the source and the data will not be committed.
 
 ## Install local command
 

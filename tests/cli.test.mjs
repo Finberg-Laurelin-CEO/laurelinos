@@ -36,12 +36,43 @@ test('brief demo includes daily founder brief', () => {
   const output = run(['brief', '--demo']);
   assert.match(output, /Daily Founder Brief/);
   assert.match(output, /Northstar/);
+  assert.match(output, /Founder operating context/);
+  assert.match(output, /Open commitments/);
+  assert.match(output, /Upcoming meetings and prep/);
+});
+
+test('brief demo JSON includes cited operating context and meeting prep', () => {
+  const output = run(['brief', '--demo', '--json']);
+  const parsed = JSON.parse(output);
+  assert.equal(parsed.organisation, 'ArcLight Labs');
+  assert.equal(parsed.demoCurrentDate, '2026-06-07');
+  assert.equal(parsed.topPriorities.length, 2);
+  assert.equal(parsed.openCommitments.length, 4);
+  assert.equal(parsed.operatingContext.length, 4);
+  assert.equal(parsed.meetingPrep.length, 2);
+  assert.equal(parsed.approvalRequired, true);
+  assert.ok(parsed.sourceIds.includes('email_2026_06_03_northstar_deck'));
+  assert.ok(parsed.upcomingMeetings.some((meeting) => meeting.prep?.objective.includes('source-scoped')));
+  assert.ok(parsed.openCommitments.every((commitment) => commitment.sourceId && commitment.recommendedAction));
 });
 
 test('open loops demo includes approval gate', () => {
   const output = run(['open-loops', '--demo']);
   assert.match(output, /Open Loops/);
   assert.match(output, /Approval required/);
+  assert.match(output, /days open/);
+  assert.match(output, /Beacon Health Systems/);
+});
+
+test('open loops JSON includes source titles, age, and counterparty company', () => {
+  const output = run(['open-loops', '--demo', '--json']);
+  const parsed = JSON.parse(output);
+  assert.equal(parsed.openLoops.length, 4);
+  const atlasLoop = parsed.openLoops.find((loop) => loop.counterpartyCompany === 'Atlas Manufacturing');
+  assert.equal(atlasLoop.daysOpen, 3);
+  assert.equal(atlasLoop.sourceTitle, 'Atlas Manufacturing pilot call');
+  assert.equal(atlasLoop.approvalRequiredBeforeExternalAction, true);
+  assert.ok(parsed.openLoops.every((loop) => loop.nextStepType && loop.sourceId));
 });
 
 test('init local creates config without secrets', () => {

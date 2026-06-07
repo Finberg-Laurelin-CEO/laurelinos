@@ -26,6 +26,19 @@ Prepare a sourced briefing for an upcoming meeting.
 6. Suggest agenda.
 7. Suggest follow-up actions.
 
+## Demo data contract
+
+The v0 synthetic demo stores meeting prep records in `examples/demo-data/demo-brain.json` under `meeting_preps`.
+
+Each record should include:
+
+- `meeting_id` matching a calendar artefact;
+- `participants`;
+- `objective`;
+- `suggested_agenda`;
+- `likely_questions`;
+- `source_ids` for every important claim.
+
 ## Output
 
 - meeting summary;
@@ -34,3 +47,7 @@ Prepare a sourced briefing for an upcoming meeting.
 - suggested agenda;
 - questions to ask;
 - source citations.
+
+## Safety
+
+Do not read real calendars or notes for v0. Use synthetic demo data unless an approved local source and explicit indexing policy exist. Do not send messages, schedule meetings, or write to external tools without approval.

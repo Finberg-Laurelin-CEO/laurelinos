@@ -1,6 +1,7 @@
 {
   "generated_for": "LaurelinOS public MVP synthetic demo",
   "warning": "Synthetic data only. Do not replace with real private customer or Laurelin data in this public repo.",
+  "demo_current_date": "2026-06-07",
   "organisation": {
     "id": "org_arclight_labs",
     "name": "ArcLight Labs",
@@ -30,6 +31,12 @@
       "name": "Omar Ahmed",
       "role": "Engineering lead",
       "company": "ArcLight Labs"
+    },
+    {
+      "id": "person_iris_okafor",
+      "name": "Iris Okafor",
+      "role": "Design partner champion",
+      "company": "Beacon Health Systems"
     }
   ],
   "artefacts": [
@@ -79,6 +86,33 @@
       "summary": "Maya is scheduled to meet Northstar Ventures about seed financing.",
       "entities": ["person_sam_rivera", "person_maya_chen"],
       "commitments": []
+    },
+    {
+      "id": "customer_note_2026_06_06_beacon_interest",
+      "type": "customer_note",
+      "date": "2026-06-06",
+      "title": "Beacon Health Systems design-partner interest",
+      "summary": "Iris wants a short meeting-prep demo showing how source-scoped memory avoids exposing unrelated customer notes.",
+      "entities": ["person_iris_okafor", "person_maya_chen"],
+      "commitments": ["commit_prepare_beacon_demo"]
+    },
+    {
+      "id": "calendar_2026_06_10_beacon_demo",
+      "type": "calendar_event",
+      "date": "2026-06-10",
+      "title": "Beacon design-partner demo",
+      "summary": "Maya is scheduled to demo the synthetic local-first workflows to Beacon Health Systems.",
+      "entities": ["person_iris_okafor", "person_maya_chen"],
+      "commitments": []
+    },
+    {
+      "id": "internal_note_2026_06_06_demo_risks",
+      "type": "internal_note",
+      "date": "2026-06-06",
+      "title": "Demo risk review",
+      "summary": "The team agreed that v0 demos must stay synthetic, local-only, and approval-gated even when showing external action suggestions.",
+      "entities": ["person_maya_chen", "person_omar_ahmed"],
+      "commitments": []
     }
   ],
   "commitments": [
@@ -86,43 +120,132 @@
       "id": "commit_send_revised_deck",
       "owner": "Maya Chen",
       "counterparty": "Sam Rivera",
+      "counterparty_company": "Northstar Ventures",
       "description": "Send revised deck and May pilot metrics before Northstar partner meeting.",
       "created_at": "2026-06-03",
       "due_at": "2026-06-07",
       "status": "open",
       "severity": "high",
       "source_id": "email_2026_06_03_northstar_deck",
+      "next_step_type": "investor_followup",
       "recommended_action": "Draft a concise email to Sam with the revised deck and pilot metrics attached."
     },
     {
       "id": "commit_send_atlas_mitigation",
       "owner": "Maya Chen",
       "counterparty": "Elena Patel",
+      "counterparty_company": "Atlas Manufacturing",
       "description": "Send Atlas Manufacturing a mitigation plan for onboarding delays.",
       "created_at": "2026-06-04",
       "due_at": "2026-06-07",
       "status": "open",
       "severity": "high",
       "source_id": "meeting_2026_06_04_atlas_risk",
+      "next_step_type": "customer_risk",
       "recommended_action": "Create a customer-risk task and draft a mitigation email for Elena."
     },
     {
       "id": "commit_resolve_calendar_scope",
       "owner": "Omar Ahmed",
       "counterparty": "Maya Chen",
+      "counterparty_company": "ArcLight Labs",
       "description": "Resolve calendar permission scope so onboarding automation can ship.",
       "created_at": "2026-06-05",
       "due_at": "2026-06-09",
       "status": "open",
       "severity": "medium",
       "source_id": "github_issue_42_onboarding",
+      "next_step_type": "engineering_blocker",
       "recommended_action": "Ask Omar for the smallest OAuth scope needed for the first onboarding workflow."
+    },
+    {
+      "id": "commit_prepare_beacon_demo",
+      "owner": "Maya Chen",
+      "counterparty": "Iris Okafor",
+      "counterparty_company": "Beacon Health Systems",
+      "description": "Prepare a source-scoped meeting-prep demo for Beacon Health Systems.",
+      "created_at": "2026-06-06",
+      "due_at": "2026-06-10",
+      "status": "open",
+      "severity": "medium",
+      "source_id": "customer_note_2026_06_06_beacon_interest",
+      "next_step_type": "design_partner_demo",
+      "recommended_action": "Assemble a synthetic meeting-prep walkthrough that shows citations, scoped sources, and approval gates."
+    }
+  ],
+  "operating_context": [
+    {
+      "area": "Investor process",
+      "status": "Northstar partner meeting is tomorrow; missing materials are the top founder-owned blocker.",
+      "source_ids": ["email_2026_06_03_northstar_deck", "calendar_2026_06_08_northstar_partner_meeting"]
+    },
+    {
+      "area": "Customer risk",
+      "status": "Atlas needs a mitigation plan this week or the pilot is at risk of losing momentum.",
+      "source_ids": ["meeting_2026_06_04_atlas_risk"]
+    },
+    {
+      "area": "Product readiness",
+      "status": "Calendar permission scope is blocking the onboarding checklist automation path.",
+      "source_ids": ["github_issue_42_onboarding"]
+    },
+    {
+      "area": "Safety posture",
+      "status": "All demos should remain synthetic, local-only, and approval-gated until explicit source approval exists.",
+      "source_ids": ["internal_note_2026_06_06_demo_risks"]
+    }
+  ],
+  "meeting_preps": [
+    {
+      "meeting_id": "calendar_2026_06_08_northstar_partner_meeting",
+      "title": "Northstar partner meeting",
+      "date": "2026-06-08",
+      "participants": ["Maya Chen", "Sam Rivera"],
+      "objective": "Show progress since the last conversation and remove concern about pilot traction.",
+      "suggested_agenda": [
+        "Open with May pilot metrics and what changed since the last deck.",
+        "Confirm whether Northstar wants deeper customer references before diligence.",
+        "Ask what would make LaurelinOS a clear seed-stage fit."
+      ],
+      "likely_questions": [
+        "How much of the demo is local-first today versus future hosted onboarding?",
+        "What customer proof exists beyond the Atlas pilot?",
+        "How will BYOK and subscription-friendly compute affect margins?"
+      ],
+      "source_ids": [
+        "email_2026_06_03_northstar_deck",
+        "decision_2026_06_05_subscription_compute",
+        "calendar_2026_06_08_northstar_partner_meeting"
+      ]
+    },
+    {
+      "meeting_id": "calendar_2026_06_10_beacon_demo",
+      "title": "Beacon design-partner demo",
+      "date": "2026-06-10",
+      "participants": ["Maya Chen", "Iris Okafor"],
+      "objective": "Demonstrate source-scoped memory and approval-gated follow-up without using real customer data.",
+      "suggested_agenda": [
+        "Show the daily brief generated from synthetic local artefacts.",
+        "Show open-loop detection with source IDs and no automatic indexing.",
+        "Ask which Beacon workflow would be worth testing with approved local sources later."
+      ],
+      "likely_questions": [
+        "Can LaurelinOS avoid reading unrelated folders?",
+        "Can every suggestion cite a source artefact?",
+        "What happens before an external follow-up is sent?"
+      ],
+      "source_ids": [
+        "customer_note_2026_06_06_beacon_interest",
+        "calendar_2026_06_10_beacon_demo",
+        "internal_note_2026_06_06_demo_risks"
+      ]
     }
   ],
   "daily_changes": [
     "Northstar requested revised deck and pilot metrics.",
     "Atlas Manufacturing flagged onboarding-delay risk.",
     "Engineering is blocked on calendar permission scope.",
+    "Beacon asked for a source-scoped meeting-prep demo.",
     "Team decided to support customer subscriptions and BYOK before bundled compute."
   ]
 }

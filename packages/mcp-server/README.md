@@ -1,5 +1,13 @@
 # packages/mcp-server
 
-Placeholder package boundary for the LaurelinOS local-first MVP.
+Package boundary for the future LaurelinOS MCP server.
 
-The zero-dependency v0 implementation currently lives in `bin/` and `lib/` so the tool is runnable immediately. Move code into this package when the TypeScript monorepo is introduced.
+Current v0 server lives in `bin/laurelinos.mjs` and uses local stdio JSON-RPC. It exposes synthetic read-only tools:
+
+```text
+get_status
+get_daily_brief
+get_open_loops
+```
+
+The next MCP branch should add automated tests and clearer handler structure without exposing HTTP, opening public ports, or adding write tools without approval gates.

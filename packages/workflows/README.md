@@ -1,8 +1,10 @@
 # packages/workflows
 
-Package boundary for LaurelinOS founder workflows.
+Package boundary for LaurelinOS founder workflows: daily brief, open-loop detection, meeting prep, and later follow-up drafting.
 
-The zero-dependency v0 implementation currently lives in `lib/demo.mjs` and `lib/format.mjs` so the CLI is runnable without a build step. When the TypeScript package split happens, move these workflow contracts here first:
+The zero-dependency v0 implementation currently lives in `lib/demo.mjs` and `lib/format.mjs` so the CLI is runnable without a build step. Synthetic data lives in `examples/demo-data/demo-brain.json`.
+
+When the TypeScript package split happens, move these workflow contracts here first:
 
 - `buildDailyBrief(brain)` — turns approved/synthetic artefacts into founder operating context, top priorities, open commitments, changes, and meeting prep.
 - `detectOpenLoops(brain)` — returns unresolved commitments with owner, counterparty, age, due date, source title, recommended action, and approval requirement.
@@ -13,4 +15,5 @@ Safety rules:
 - demo workflows use synthetic local data only;
 - source IDs must remain visible in outputs;
 - suggested external actions remain approval-gated;
+- no model calls, external API calls, or real private data for v0;
 - real user folders must not be indexed by these workflows without explicit source approval.

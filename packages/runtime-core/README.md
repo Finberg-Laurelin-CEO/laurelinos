@@ -5,3 +5,11 @@ Runtime-core boundary for shared local-first policy helpers.
 The first module here is `approval.mjs`, which centralises explicit approval checks for write-like operations. Adapter and workflow packages should use it before any future external write, sync, indexing, or Markdown mutation path.
 
 The v0 CLI still lives in `bin/` and `lib/` so the tool stays runnable without a build step.
+
+Future runtime work should preserve these rules:
+
+- runtime owns state;
+- models do not own state;
+- source paths are registered before indexing;
+- indexing and external writes require explicit approval;
+- local demo commands must not require GBrain, cloud infrastructure, or hosted services.

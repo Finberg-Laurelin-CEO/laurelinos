@@ -8,23 +8,9 @@ https://github.com/Finberg-Laurelin-CEO/laurelinos
 
 The repo already exists. Do not create a second repo.
 
-## Local setup
+## Current pushed baseline
 
-```bash
-git clone https://github.com/Finberg-Laurelin-CEO/laurelinos.git
-cd laurelinos
-```
-
-Copy this scaffold into the cloned folder, then run:
-
-```bash
-git status
-git add .
-git commit -m "Initial LaurelinOS local-first MVP scaffold"
-git push -u origin main
-```
-
-## Verify
+`main` has the local-first scaffold pushed and should remain runnable locally:
 
 ```bash
 npm install
@@ -32,19 +18,48 @@ npm test
 npm run check
 ```
 
-## Superset
+Working v0 commands:
 
-After the first commit is pushed, open the local repo in Superset.
+```bash
+npm run dev -- doctor
+npm run dev -- init --local
+npm run dev -- sources list
+npm run dev -- sources add demo ./examples/demo-data
+npm run dev -- brain status
+npm run dev -- brief --demo
+npm run dev -- open-loops --demo
+npm run dev -- mcp serve
+```
+
+## GitHub auth note
+
+The repo includes `.github/workflows/ci.yml`. If pushing over HTTPS fails with a GitHub `workflow` scope error, either refresh the GitHub token with workflow scope or push over an authenticated SSH remote.
+
+Do not work around this by deleting CI.
+
+## Superset
 
 Use isolated branches/workspaces for parallel agent work:
 
 ```text
-feat/cli-doctor-init
 feat/demo-workflows
 feat/gbrain-adapter
 feat/mcp-server
-docs/laurelinos-dev
-docs/pricing-stripe
+docs/local-build
 ```
 
-Merge only after tests pass.
+Merge only after tests pass:
+
+```bash
+npm test
+npm run check
+```
+
+Later commercial/docs work can use separate branches after the local MVP is solid:
+
+```text
+docs/stripe-provisioning-plan
+apps/docs-site / laurelinos.dev
+```
+
+Do not deploy, create GCP/VPS resources, expose remote MCP, or add live Stripe credentials for v0.

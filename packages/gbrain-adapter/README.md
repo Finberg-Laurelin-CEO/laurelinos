@@ -1,5 +1,25 @@
 # packages/gbrain-adapter
 
-Placeholder package boundary for the LaurelinOS local-first MVP.
+Provider-neutral brain adapter boundary for LaurelinOS.
 
-The zero-dependency v0 implementation currently lives in `bin/` and `lib/` so the tool is runnable immediately. Move code into this package when the TypeScript monorepo is introduced.
+The first implementation is a zero-dependency synthetic stub in `index.mjs`. It exists to lock the runtime contract before binding LaurelinOS to a real GBrain install.
+
+## Boundary
+
+The adapter exposes:
+
+```text
+status
+listSources
+addSource
+search
+getPage
+writePage
+sync
+```
+
+## Safety posture
+
+- `status`, `listSources`, `search`, and `getPage` read only in-memory synthetic data.
+- `addSource`, `writePage`, and `sync` require explicit approval in their input.
+- The stub never initialises GBrain, indexes folders, writes Markdown, or touches the filesystem.

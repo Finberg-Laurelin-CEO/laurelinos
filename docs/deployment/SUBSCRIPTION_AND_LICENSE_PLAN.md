@@ -88,12 +88,12 @@ Before building webhooks, use a manual path:
 npm install -g laurelinos
 laurelinos doctor
 laurelinos init --local
-laurelinos license activate <token>   # later command, not v0 yet
+laurelinos license activate <token>   # local-only manual pilot activation
 laurelinos brief --demo
 laurelinos mcp serve
 ```
 
-For the current repo state, `license activate` is only a planned command. Do not implement it until the local runtime and approval model are solid.
+For the current repo state, `license activate` writes a local license record and stores only a token hash. It does not validate against Stripe or a hosted entitlement service yet.
 
 ## Automated path later
 
@@ -123,7 +123,7 @@ Pros:
 
 - lowest install friction;
 - easiest public docs;
-- strongest open-source/public OS positioning;
+- clear source-available evaluation posture without giving away commercial rights;
 - buyers can verify the local-first promise before paying.
 
 Cons:
@@ -177,17 +177,24 @@ Managed Founder Office
 - optional capped managed compute later
 ```
 
-## Commands to add later
+## License commands
+
+Implemented local-only commands:
 
 ```bash
 laurelinos license status
 laurelinos license activate <token>
+```
+
+Commands to add later:
+
+```bash
 laurelinos license deactivate
 laurelinos auth login          # later hosted account flow, not v0
 laurelinos billing status      # later hosted entitlement check
 ```
 
-All commands must avoid writing secrets to logs. Activation tokens should be treated as secrets.
+All commands must avoid writing secrets to logs. Activation tokens should be treated as secrets. Current activation stores only a token hash.
 
 ## What not to build yet
 

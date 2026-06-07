@@ -21,6 +21,10 @@ sources show <name>
 sources approve <name>
 audit log
 audit show <id>
+license status
+license activate <token>
 ```
 
 `sources approve` records approval metadata and an audit event. It does not index source file contents.
+
+`license activate` writes a local license record for manual pilots and stores only a token hash. It does not contact Stripe or a hosted entitlement service.

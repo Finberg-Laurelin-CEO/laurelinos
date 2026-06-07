@@ -147,6 +147,39 @@ test('sources approve records explicit approval and audit events without indexin
   assert.equal(shownEvent.id, source.approvalEventId);
 });
 
+test('license status starts in demo mode and activation stores only a token hash', () => {
+  const tmp = makeTempWorkspace();
+  const initialStatus = JSON.parse(run(['license', 'status'], { cwd: tmp }));
+  assert.equal(initialStatus.status, 'demo');
+  assert.equal(initialStatus.paidFeaturesActive, false);
+  assert.equal(initialStatus.licenseRequiredForDemo, false);
+
+  const token = 'laurelinos_local_test_token_1234567890';
+  const activateOutput = run(['license', 'activate', token], { cwd: tmp });
+  assert.match(activateOutput, /Activated local FounderOS license record/);
+  assert.match(activateOutput, /Raw activation token was not stored/);
+  assert.doesNotMatch(activateOutput, new RegExp(token));
+
+  const licensePath = path.join(tmp, '.laurelinos', 'license.json');
+  const licenseFile = fs.readFileSync(licensePath, 'utf8');
+  assert.doesNotMatch(licenseFile, new RegExp(token));
+  const license = JSON.parse(licenseFile);
+  assert.equal(license.status, 'local-activated');
+  assert.equal(license.product, 'FounderOS');
+  assert.equal(license.plan, 'founderos-pilot');
+  assert.match(license.tokenHash, /^[0-9a-f]{64}$/);
+
+  const status = JSON.parse(run(['license', 'status'], { cwd: tmp }));
+  assert.equal(status.status, 'local-activated');
+  assert.equal(status.paidFeaturesActive, true);
+  assert.ok(status.features.includes('mcp'));
+
+  const audit = JSON.parse(run(['audit', 'log'], { cwd: tmp }));
+  assert.equal(audit.events.length, 1);
+  assert.equal(audit.events[0].type, 'license_activated_local');
+  assert.doesNotMatch(JSON.stringify(audit), new RegExp(token));
+});
+
 test('brain status reports local runtime state through synthetic-safe status', () => {
   const tmp = makeTempWorkspace();
   const output = run(['brain', 'status'], { cwd: tmp });

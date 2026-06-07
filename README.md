@@ -57,6 +57,7 @@ npm run dev -- sources add demo ./examples/demo-data
 npm run dev -- sources show demo
 npm run dev -- sources approve demo
 npm run dev -- audit log
+npm run dev -- license status
 npm run dev -- brain status
 npm run dev -- brief --demo
 npm run dev -- open-loops --demo
@@ -109,6 +110,7 @@ laurelinos sources add <name> <path>
 laurelinos sources show <name>
 laurelinos sources approve <name>
 laurelinos audit log
+laurelinos license status
 laurelinos brain status
 laurelinos brief --demo
 laurelinos open-loops --demo

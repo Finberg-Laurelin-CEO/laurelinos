@@ -13,13 +13,14 @@ import {
 } from '../lib/config.mjs';
 import { buildDailyBrief, detectOpenLoops, loadDemoBrain } from '../lib/demo.mjs';
 import { printBrief, printJson, printOpenLoops } from '../lib/format.mjs';
+import { activateLocalLicense, readLicenseStatus } from '../lib/license.mjs';
 import { handleMcpLine } from '../lib/mcp.mjs';
 
 const repoRoot = path.resolve(new URL(import.meta.url).pathname, '..', '..');
 const args = process.argv.slice(2);
 
 function usage(exitCode = 0) {
-  console.log(`LaurelinOS local-first runtime\n\nUsage:\n  laurelinos doctor\n  laurelinos init --local\n  laurelinos sources list\n  laurelinos sources add <name> <path>\n  laurelinos sources show <name>\n  laurelinos sources approve <name>\n  laurelinos audit log\n  laurelinos audit show <id>\n  laurelinos brain status\n  laurelinos brief --demo [--json]\n  laurelinos open-loops --demo [--json]\n  laurelinos mcp serve\n`);
+  console.log(`LaurelinOS local-first runtime\n\nUsage:\n  laurelinos doctor\n  laurelinos init --local\n  laurelinos sources list\n  laurelinos sources add <name> <path>\n  laurelinos sources show <name>\n  laurelinos sources approve <name>\n  laurelinos audit log\n  laurelinos audit show <id>\n  laurelinos license status\n  laurelinos license activate <token>\n  laurelinos brain status\n  laurelinos brief --demo [--json]\n  laurelinos open-loops --demo [--json]\n  laurelinos mcp serve\n`);
   process.exit(exitCode);
 }
 
@@ -209,6 +210,34 @@ function runAudit() {
   usage(1);
 }
 
+function runLicense() {
+  const sub = args[1];
+  if (sub === 'status') {
+    printJson(readLicenseStatus());
+    return;
+  }
+  if (sub === 'activate') {
+    const token = args[2];
+    if (!token) {
+      console.error('Usage: laurelinos license activate <token>');
+      process.exit(1);
+    }
+    try {
+      const result = activateLocalLicense(token);
+      console.log('Activated local FounderOS license record.');
+      console.log(`License path: ${result.licensePath}`);
+      console.log(`Audit event: ${result.auditEvent.id}`);
+      console.log('Raw activation token was not stored.');
+      console.log('No Stripe or hosted entitlement service was contacted.');
+    } catch (error) {
+      console.error(error instanceof Error ? error.message : String(error));
+      process.exit(1);
+    }
+    return;
+  }
+  usage(1);
+}
+
 function runBrain() {
   const sub = args[1];
   if (sub !== 'status') usage(1);
@@ -288,6 +317,9 @@ switch (command) {
     break;
   case 'audit':
     runAudit();
+    break;
+  case 'license':
+    runLicense();
     break;
   case 'brain':
     runBrain();
